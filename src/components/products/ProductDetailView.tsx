@@ -1,51 +1,56 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { AddToCartButton } from "@/components/products/AddToCartButton";
-import { LabeledSectionTabs } from "@/components/products/LabeledSectionTabs";
-import type { LabeledSection } from "@/components/products/LabeledSectionTabs";
+import { ProductDetailBreadcrumb } from "@/components/products/detail/ProductDetailBreadcrumb";
+import { ProductDetailInfo } from "@/components/products/detail/ProductDetailInfo";
+import { ProductDetailSummary } from "@/components/products/detail/ProductDetailSummary";
+import type { ProductMetaItem } from "@/components/products/detail/ProductDetailMeta";
 import { ProductGallery } from "@/components/products/ProductGallery";
-import { ProductPricing } from "@/components/products/ProductPricing";
-import { VariantSelector } from "@/components/products/VariantSelector";
 import type { ProductDetailFieldsFragment } from "@/graphql/generated/graphql";
 import {
   getPrimaryVariant,
-  getSellingPrice,
   isInStock,
   type ProductVariant,
 } from "@/features/products/utils/pricing";
+import { getDetailAttributeValue } from "@/features/products/utils/detail-sections";
 import { normalizeVariant } from "@/features/products/utils/product-helpers";
+import { collectImageUrls } from "@/lib/images";
 
 type ProductDetailViewProps = {
   product: ProductDetailFieldsFragment;
 };
 
-function toSections(
-  product: ProductDetailFieldsFragment,
-): LabeledSection[] {
-  const mapSection = (
-    id: string,
-    title: string,
-    groups: ProductDetailFieldsFragment["productAttributes"],
-  ): LabeledSection => ({
-    id,
-    title,
-    items:
-      groups?.map((group) => ({
-        label: group.enLabel,
-        values:
-          group.values
-            .map((value) => value.enName)
-            .filter((value): value is string => Boolean(value)) ?? [],
-      })) ?? [],
-  });
+function getModelCode(product: ProductDetailFieldsFragment): string | null {
+  return getDetailAttributeValue(product.productAttributes, [/^model$/i]);
+}
 
+function buildMetaItems(
+  product: ProductDetailFieldsFragment,
+  variant: ProductVariant,
+): ProductMetaItem[] {
   return [
-    mapSection("basic", "Basic Information", product.productAttributes),
-    mapSection("detailed", "Detailed Information", product.detailedDescriptions),
-    mapSection("delivery", "Terms & Conditions", product.deliveries),
-    mapSection("warranty", "Warranty Information", product.serviceAndDeliveries),
-    mapSection("features", "Special Features", product.priceAndStocks),
+    {
+      label: "Brand",
+      value:
+        getDetailAttributeValue(product.productAttributes, [/^brand$/i]) ?? "",
+    },
+    {
+      label: "Series",
+      value:
+        getDetailAttributeValue(product.productAttributes, [/^series/i]) ?? "",
+    },
+    {
+      label: "Product ID",
+      value: product.uid,
+    },
+    {
+      label: "POS Item Code",
+      value: variant.posItemCode ?? "",
+    },
+    {
+      label: "EBS Item Code",
+      value: variant.ebsItemCode ?? "",
+    },
   ];
 }
 
@@ -64,48 +69,42 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
   const selectedVariant: ProductVariant =
     variants[selectedIndex] ?? getPrimaryVariant(variants) ?? variants[0]!;
 
-  const sections = useMemo(() => toSections(product), [product]);
-  const images = product.images.map((image) => image.url);
-  const sellingPrice = getSellingPrice(selectedVariant);
+  const images = useMemo(
+    () => collectImageUrls(product.images.map((image) => image.url)),
+    [product.images],
+  );
+
+  const productName = product.enName ?? "Product";
+  const modelCode = getModelCode(product);
+  const metaItems = useMemo(
+    () => buildMetaItems(product, selectedVariant),
+    [product, selectedVariant],
+  );
 
   return (
-    <div className="grid gap-10 lg:grid-cols-2">
-      <ProductGallery
-        images={images}
-        productName={product.enName ?? "Product"}
-      />
+    <article className="space-y-10">
+      <ProductDetailBreadcrumb productName={productName} />
 
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            {product.enName ?? "Product"}
-          </h1>
-          <p className="mt-2 text-sm text-zinc-500">SKU: {product.uid}</p>
-        </div>
+      <div className="grid gap-10 lg:grid-cols-2 lg:items-start lg:gap-14">
+        <ProductGallery
+          images={images}
+          productName={productName}
+          className="lg:sticky lg:top-24"
+        />
 
-        <ProductPricing variant={selectedVariant} />
-        <VariantSelector
+        <ProductDetailSummary
+          productUid={product.uid}
+          productName={productName}
+          modelCode={modelCode}
+          metaItems={metaItems}
+          imageUrl={images[0]}
           variants={variants}
           selectedIndex={selectedIndex}
-          onSelect={setSelectedIndex}
-        />
-
-        <AddToCartButton
-          uid={product.uid}
-          name={product.enName ?? "Product"}
-          imageUrl={images[0]}
-          posItemCode={selectedVariant.posItemCode || product.uid}
-          unitPrice={sellingPrice}
-          disabled={!isInStock(selectedVariant)}
-          label="Buy Now"
-          variant="buyNow"
-          className="w-full py-3 text-base"
+          onSelectVariant={setSelectedIndex}
         />
       </div>
 
-      <div className="lg:col-span-2">
-        <LabeledSectionTabs sections={sections} />
-      </div>
-    </div>
+      <ProductDetailInfo product={product} />
+    </article>
   );
 }

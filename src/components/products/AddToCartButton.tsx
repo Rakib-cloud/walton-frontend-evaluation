@@ -61,7 +61,7 @@ export function AddToCartButton({
       className={cn(
         "inline-flex h-10 items-center justify-center rounded-md px-4 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60",
         variant === "buyNow"
-          ? "bg-walton-blue text-white hover:bg-[#0f2266]"
+          ? "bg-[#2b3d6d] text-white hover:bg-[#39a9bd]"
           : "bg-zinc-900 text-white hover:bg-zinc-800",
         className,
       )}

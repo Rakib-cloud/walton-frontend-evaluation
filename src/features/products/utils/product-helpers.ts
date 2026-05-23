@@ -31,9 +31,14 @@ type GraphQLVariant = {
   } | null;
 };
 
-export function normalizeVariant(variant: GraphQLVariant): ProductVariant {
+type GraphQLVariantWithEbs = GraphQLVariant & {
+  ebsItemCode?: string | null;
+};
+
+export function normalizeVariant(variant: GraphQLVariantWithEbs): ProductVariant {
   return {
     mrpPrice: variant.mrpPrice ?? 0,
+    ebsItemCode: variant.ebsItemCode ?? "",
     posItemCode: variant.posItemCode ?? "",
     quantity: variant.quantity ?? 0,
     discount: variant.discount

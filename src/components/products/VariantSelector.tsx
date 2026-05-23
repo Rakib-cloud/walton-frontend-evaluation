@@ -19,7 +19,7 @@ export function VariantSelector({
 
   return (
     <div className="space-y-2">
-      <p className="text-sm font-medium text-zinc-700">Select variant</p>
+      <p className="text-sm font-semibold text-[#1e3a5f]">Select variant</p>
       <ul className="flex flex-wrap gap-2">
         {variants.map((variant, index) => {
           const label = variant.posItemCode || `Variant ${index + 1}`;
@@ -32,10 +32,10 @@ export function VariantSelector({
                 onClick={() => onSelect(index)}
                 disabled={!inStock}
                 className={cn(
-                  "rounded-lg border px-3 py-2 text-sm transition-colors",
+                  "rounded-md border px-3 py-2 text-sm font-medium transition-colors",
                   index === selectedIndex
-                    ? "border-zinc-900 bg-zinc-900 text-white"
-                    : "border-zinc-300 bg-white text-zinc-800 hover:border-zinc-500",
+                    ? "border-[#142D84] bg-[#142D84] text-white"
+                    : "border-zinc-300 bg-white text-zinc-800 hover:border-[#39a9bd]",
                   !inStock && "cursor-not-allowed opacity-50",
                 )}
               >
