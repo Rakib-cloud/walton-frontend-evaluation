@@ -63,18 +63,22 @@ src/
 ### Section 4 — Product Details Page (PDP)
 
 - **Dynamic route** — `/products/[uid]`
-- **Image gallery** — main image + thumbnail strip
+- **Image gallery** — Integrated a high-performance **hover zoom magnifier** (desktop floating window on the right with GPU-accelerated `translate3d` translation and magnifier lens) and a fullscreen **Lightbox Modal** (featuring arrow navigation, bottom thumbnails strip, and body scroll locking).
+- **Layout Alignment** — Equal height grid card structures for both the gallery and the info columns.
 - **Variant selector** — per-variant stock state, disabled when out of stock
-- **Stock-aware CTA** — disabled button + badge when `quantity === 0`
-- **Dynamic pricing** — MRP strikethrough, discount badge, selling price from `discount.value`
+- **Stock-aware CTA** — disabled button + badge when variant is out of stock
+- **Dynamic pricing** — MRP strikethrough, discount badge, selling price from variant metrics
 - **`LabeledSectionTabs`** — reusable component for all `{ enLabel, values }` API sections
 
-### Section 5 — Cart System
+### Section 5 — Cart & Checkout System
 
 - **Zustand store** — add / remove / update quantity / clear
 - **Persistence** — `localStorage` via Zustand `persist` middleware (`walton-cart` key)
-- **Hydration** — `skipHydration: true` + `useCartHydration()` on mount to avoid SSR mismatch
-- **Cart drawer** — dynamically imported (`ssr: false`) to keep initial bundle small
+- **Hydration** — `skipHydration: true` + `useCartHydration()` on mount with client-only guards to avoid SSR hydration mismatches
+- **Direct Redirection Flow**:
+  - **Cart Page (`/cart`)** — Dedicated route showing detailed cart items, quantity adjustments, and subtotal.
+  - **Checkout Page (`/checkout`)** — Shipping address form inputs with client validations and pre-selected Cash on Delivery payment.
+  - **Order Success (`/checkout/success`)** — Receipt overview showing order ID, items count, total, and shipping coordinates.
 
 ### Section 6 — Performance Optimization
 
@@ -82,16 +86,15 @@ src/
 |-----------|-------|
 | `React.memo` | `ProductCard` |
 | Server Components | PLP/PDP pages, layout, metadata |
-| Client boundaries | Filters, catalog scroll, cart, variant selection |
+| Client boundaries | Filters, catalog scroll, cart/checkout, variant selection |
 | GraphQL fragments | `ProductCardFields`, `ProductDetailFields` — no over-fetching |
 | Apollo cache merge | Paginated `getProducts` field policy |
-| Dynamic import | `CartDrawer` lazy-loaded |
+| CSS GPU acceleration | `translate3d` for smooth magnifier lens tracking |
 | `next/image` | All product images with `sizes` hints |
 
 ### Section 7 — React 19 Features
 
-- **`useOptimistic`** — instant cart count feedback in `AddToCartButton`
-- **`useTransition`** — non-blocking add-to-cart UI state
+- **Async Transitions (`useTransition`)** — Leverages React 19's new support for passing asynchronous functions directly inside `startTransition`. This enables non-blocking asynchronous state updates (cart addition + client-side page routing transitions) while keeping `isPending` true.
 
 ## Architecture Decisions
 

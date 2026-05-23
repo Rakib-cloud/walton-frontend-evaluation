@@ -33,7 +33,7 @@ export function ProductDetailSummary({
   const inStock = isInStock(selectedVariant);
 
   return (
-    <div className="space-y-6 rounded-md border border-zinc-200 bg-white p-6 shadow-sm">
+    <div className="space-y-6 rounded-md border border-zinc-200 bg-white p-6 shadow-sm h-full flex flex-col justify-start">
       <header className="space-y-3 border-b border-zinc-100 pb-5">
         {modelCode ? (
           <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
@@ -57,7 +57,7 @@ export function ProductDetailSummary({
         onSelect={onSelectVariant}
       />
 
-      <div className="flex flex-col gap-3 border-t border-zinc-100 pt-5 sm:flex-row">
+      <div className="flex flex-col gap-3 border-t border-zinc-100 pt-5 sm:flex-row mt-auto">
         <AddToCartButton
           uid={productUid}
           name={productName}

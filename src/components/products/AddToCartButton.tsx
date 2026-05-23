@@ -1,6 +1,7 @@
 "use client";
 
-import { useOptimistic, useTransition } from "react";
+import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { useCartStore } from "@/features/cart/store/cart-store";
 import { cn } from "@/lib/cn";
 
@@ -27,13 +28,9 @@ export function AddToCartButton({
   label = "Add to Cart",
   variant = "default",
 }: AddToCartButtonProps) {
+  const router = useRouter();
   const addItem = useCartStore((state) => state.addItem);
-  const cartCount = useCartStore((state) => state.totalItems());
   const [isPending, startTransition] = useTransition();
-  const [optimisticCount, setOptimisticCount] = useOptimistic(
-    cartCount,
-    (current, added: number) => current + added,
-  );
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -42,7 +39,6 @@ export function AddToCartButton({
     if (disabled) return;
 
     startTransition(async () => {
-      setOptimisticCount(1);
       addItem({
         uid,
         name,
@@ -50,6 +46,7 @@ export function AddToCartButton({
         posItemCode,
         unitPrice,
       });
+      router.push("/cart");
     });
   };
 
@@ -65,11 +62,7 @@ export function AddToCartButton({
           : "bg-zinc-900 text-white hover:bg-zinc-800",
         className,
       )}
-      aria-label={
-        disabled
-          ? "Out of stock"
-          : `${label} ${name}. Cart has ${optimisticCount} items`
-      }
+      aria-label={disabled ? "Out of stock" : `${label} ${name}`}
     >
       {disabled ? "Out of Stock" : isPending ? "Adding..." : label}
     </button>

@@ -1,46 +1,23 @@
 "use client";
 
-import Image from "next/image";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { PRODUCT_PLACEHOLDER_IMAGE } from "@/lib/constants";
 import { cn } from "@/lib/cn";
 import { collectImageUrls } from "@/lib/images";
+import { ProductImageZoom } from "@/components/products/ProductImageZoom";
+import { ProductImage } from "@/components/ui/ProductImage";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  SearchPlusIcon,
+  CloseIcon,
+} from "@/components/ui/Icons";
 
 type ProductGalleryProps = {
   images: string[];
   productName: string;
   className?: string;
 };
-
-function GalleryImage({
-  src,
-  alt,
-  priority,
-  className,
-  sizes,
-}: {
-  src: string;
-  alt: string;
-  priority?: boolean;
-  className?: string;
-  sizes: string;
-}) {
-  const [failed, setFailed] = useState(false);
-  const imageSrc = failed ? PRODUCT_PLACEHOLDER_IMAGE : src;
-
-  return (
-    <Image
-      src={imageSrc}
-      alt={alt}
-      fill
-      sizes={sizes}
-      priority={priority}
-      loading={priority ? "eager" : "lazy"}
-      className={className}
-      onError={() => setFailed(true)}
-    />
-  );
-}
 
 export function ProductGallery({
   images,
@@ -52,6 +29,8 @@ export function ProductGallery({
     galleryImages.length > 0 ? galleryImages : [PRODUCT_PLACEHOLDER_IMAGE];
 
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  
   const activeSrc = slides[activeIndex] ?? PRODUCT_PLACEHOLDER_IMAGE;
   const hasMultiple = slides.length > 1;
 
@@ -62,96 +41,217 @@ export function ProductGallery({
     [slides.length],
   );
 
+  // Disable body scroll when lightbox is open
+  useEffect(() => {
+    if (isLightboxOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isLightboxOpen]);
+
+  // Keyboard navigation for Lightbox
+  useEffect(() => {
+    if (!isLightboxOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        goTo(activeIndex - 1);
+      } else if (e.key === "ArrowRight") {
+        goTo(activeIndex + 1);
+      } else if (e.key === "Escape") {
+        setIsLightboxOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isLightboxOpen, activeIndex, goTo]);
+
   return (
-    <div className={cn("space-y-4", className)}>
-      <div className="relative overflow-hidden rounded-md border border-zinc-200 bg-white shadow-sm">
-        <div className="relative aspect-square w-full min-h-[280px] sm:min-h-[360px]">
-          <GalleryImage
-            key={activeSrc}
-            src={activeSrc}
-            alt={productName}
-            priority
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            className="object-contain p-6"
-          />
+    <div className={cn("flex flex-col h-full space-y-4", className)}>
+      {/* Main Image Container with Magnifier */}
+      <div className="relative group overflow-visible flex-1 flex flex-col">
+        {/* Floating Zoom & Lightbox badge */}
+        <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs text-zinc-700 text-[10px] sm:text-xs px-2.5 py-1 rounded-full font-semibold z-10 border border-zinc-200/60 flex items-center gap-1.5 shadow-xs pointer-events-none transition-colors group-hover:bg-white group-hover:text-walton-blue">
+          <SearchPlusIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-walton-teal" />
+          <span className="hidden sm:inline">Hover to zoom, click to expand</span>
+          <span className="sm:hidden">Tap to expand</span>
         </div>
 
+        {/* Dynamic Zoom Component */}
+        <ProductImageZoom
+          key={activeSrc}
+          src={activeSrc}
+          alt={productName}
+          zoomFactor={2.5}
+          onClick={() => setIsLightboxOpen(true)}
+          className="w-full h-full flex-1 flex flex-col"
+        />
+
+        {/* Carousel Prev/Next Overlay buttons for quick swapping (Mobile/Tablet and fallback) */}
         {hasMultiple ? (
           <>
             <button
               type="button"
-              onClick={() => goTo(activeIndex - 1)}
-              className="absolute left-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-200 bg-white/95 text-zinc-700 shadow-sm transition-colors hover:border-[#39a9bd] hover:text-[#39a9bd]"
+              onClick={(e) => {
+                e.stopPropagation();
+                goTo(activeIndex - 1);
+              }}
+              className="absolute left-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-200 bg-white/95 text-zinc-700 shadow-xs transition-all hover:scale-105 hover:border-walton-teal hover:text-walton-teal lg:opacity-0 lg:group-hover:opacity-100 focus:outline-none"
               aria-label="Previous image"
             >
-              <ChevronLeftIcon className="h-5 w-5" />
+              <ChevronLeftIcon className="h-4.5 w-4.5" />
             </button>
             <button
               type="button"
-              onClick={() => goTo(activeIndex + 1)}
-              className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-200 bg-white/95 text-zinc-700 shadow-sm transition-colors hover:border-[#39a9bd] hover:text-[#39a9bd]"
+              onClick={(e) => {
+                e.stopPropagation();
+                goTo(activeIndex + 1);
+              }}
+              className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-200 bg-white/95 text-zinc-700 shadow-xs transition-all hover:scale-105 hover:border-walton-teal hover:text-walton-teal lg:opacity-0 lg:group-hover:opacity-100 focus:outline-none"
               aria-label="Next image"
             >
-              <ChevronRightIcon className="h-5 w-5" />
+              <ChevronRightIcon className="h-4.5 w-4.5" />
             </button>
-            <p className="absolute bottom-3 right-3 rounded-md bg-black/55 px-2.5 py-1 text-xs font-medium text-white">
+            <p className="absolute bottom-3 right-3 rounded-md bg-black/60 px-2 py-0.5 text-[10px] font-medium text-white shadow-xs">
               {activeIndex + 1} / {slides.length}
             </p>
           </>
         ) : null}
       </div>
 
+      {/* Styled Thumbnails Selector */}
       {hasMultiple ? (
-        <ul className="flex gap-3 overflow-x-auto pb-1 scrollbar-none">
-          {slides.map((url, index) => (
-            <li key={`${url}-${index}`} className="shrink-0">
+        <div className="relative">
+          <ul className="flex gap-3 overflow-x-auto pb-2 scrollbar-none snap-x snap-mandatory scroll-smooth">
+            {slides.map((url, index) => (
+              <li key={`${url}-${index}`} className="shrink-0 snap-start">
+                <button
+                  type="button"
+                  onClick={() => setActiveIndex(index)}
+                  className={cn(
+                    "relative block h-16 w-16 sm:h-20 sm:w-20 overflow-hidden rounded-lg border-2 bg-white transition-all duration-300 ease-out shadow-xs",
+                    index === activeIndex
+                      ? "border-walton-blue ring-3 ring-walton-blue/10 scale-95"
+                      : "border-zinc-200 hover:border-walton-teal hover:-translate-y-0.5 hover:shadow-md active:scale-95",
+                  )}
+                  aria-label={`View image ${index + 1}`}
+                  aria-current={index === activeIndex ? "true" : undefined}
+                >
+                  <ProductImage
+                    src={url}
+                    alt=""
+                    fill
+                    sizes="80px"
+                    className="object-contain p-1.5"
+                  />
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
+      {/* Fullscreen Lightbox Modal */}
+      {isLightboxOpen && (
+        <div className="fixed inset-0 z-[100] flex flex-col justify-between bg-zinc-950/95 backdrop-blur-md animate-fade-in">
+          {/* Header Bar */}
+          <div className="flex items-center justify-between p-4 sm:p-6 text-white z-10 bg-gradient-to-b from-black/50 to-transparent">
+            <div>
+              <h2 className="text-sm sm:text-base font-semibold truncate max-w-[250px] sm:max-w-md">
+                {productName}
+              </h2>
+              {hasMultiple && (
+                <p className="text-xs text-zinc-400">
+                  Image {activeIndex + 1} of {slides.length}
+                </p>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsLightboxOpen(false)}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-all hover:bg-white/20 hover:scale-105 focus:outline-none"
+              aria-label="Close fullscreen"
+            >
+              <CloseIcon className="h-6 w-6" />
+            </button>
+          </div>
+
+          {/* Large Image Frame */}
+          <div className="relative flex-1 flex items-center justify-center p-4">
+            {hasMultiple && (
               <button
                 type="button"
-                onClick={() => setActiveIndex(index)}
-                className={cn(
-                  "relative block h-20 w-20 overflow-hidden rounded-md border-2 bg-white transition-colors",
-                  index === activeIndex
-                    ? "border-[#142D84]"
-                    : "border-zinc-200 hover:border-[#39a9bd]",
-                )}
-                aria-label={`View image ${index + 1}`}
-                aria-current={index === activeIndex ? "true" : undefined}
+                onClick={() => goTo(activeIndex - 1)}
+                className="absolute left-4 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white transition-all hover:bg-white/20 hover:scale-105 active:scale-95 focus:outline-none"
+                aria-label="Previous image"
               >
-                <GalleryImage
-                  src={url}
-                  alt=""
-                  sizes="80px"
-                  className="object-contain p-1.5"
-                />
+                <ChevronLeftIcon className="h-6 w-6" />
               </button>
-            </li>
-          ))}
-        </ul>
-      ) : null}
+            )}
+
+            <div className="relative w-full h-full max-w-4xl max-h-[70vh] flex items-center justify-center">
+              <ProductImage
+                key={`lightbox-${activeSrc}`}
+                src={activeSrc}
+                alt={productName}
+                fill
+                priority
+                sizes="100vw"
+                className="object-contain p-2 select-none"
+              />
+            </div>
+
+            {hasMultiple && (
+              <button
+                type="button"
+                onClick={() => goTo(activeIndex + 1)}
+                className="absolute right-4 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white transition-all hover:bg-white/20 hover:scale-105 active:scale-95 focus:outline-none"
+                aria-label="Next image"
+              >
+                <ChevronRightIcon className="h-6 w-6" />
+              </button>
+            )}
+          </div>
+
+          {/* Bottom Thumbnails Navigation in Lightbox */}
+          {hasMultiple && (
+            <div className="w-full bg-gradient-to-t from-black/50 to-transparent p-4 sm:p-6 flex flex-col items-center gap-3">
+              <ul className="flex gap-2.5 overflow-x-auto max-w-full pb-2 scrollbar-none">
+                {slides.map((url, index) => (
+                  <li key={`lightbox-thumb-${url}-${index}`} className="shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setActiveIndex(index)}
+                      className={cn(
+                        "relative block h-12 w-12 sm:h-16 sm:w-16 overflow-hidden rounded-md border-2 bg-zinc-900 transition-all",
+                        index === activeIndex
+                          ? "border-walton-teal scale-105 shadow-lg shadow-walton-teal/20"
+                          : "border-zinc-700 hover:border-zinc-500",
+                      )}
+                      aria-label={`View image ${index + 1}`}
+                    >
+                      <ProductImage
+                        src={url}
+                        alt=""
+                        fill
+                        sizes="64px"
+                        className="object-contain p-1"
+                      />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
     </div>
-  );
-}
-
-function ChevronLeftIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-      <path
-        fillRule="evenodd"
-        d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
-        clipRule="evenodd"
-      />
-    </svg>
-  );
-}
-
-function ChevronRightIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-      <path
-        fillRule="evenodd"
-        d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-        clipRule="evenodd"
-      />
-    </svg>
   );
 }

@@ -85,7 +85,7 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
     <article className="space-y-10">
       <ProductDetailBreadcrumb productName={productName} />
 
-      <div className="grid gap-10 lg:grid-cols-2 lg:items-start lg:gap-14">
+      <div className="grid gap-10 lg:grid-cols-2 lg:items-stretch lg:gap-14">
         <ProductGallery
           images={images}
           productName={productName}
