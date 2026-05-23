@@ -1,0 +1,70 @@
+# Local schema derived from Walton Plaza API reference.
+# Used by GraphQL Code Generator for fully typed operations.
+
+type Query {
+  getProducts(
+    pagination: PaginationInput
+    filter: ProductFilterInput
+  ): GetProductsResponse
+}
+
+input PaginationInput {
+  skip: Int
+  limit: Int
+}
+
+input ProductFilterInput {
+  uid: String
+  posItemCode: String
+  isActive: Boolean
+}
+
+type GetProductsResponse {
+  message: String
+  statusCode: Int
+  result: ProductListResult
+}
+
+type ProductListResult {
+  count: Int
+  products: [Product!]!
+}
+
+type Product {
+  uid: String!
+  enName: String
+  images: [ProductImage!]!
+  productAttributes: [LabeledValueGroup!]
+  detailedDescriptions: [LabeledValueGroup!]
+  deliveries: [LabeledValueGroup!]
+  serviceAndDeliveries: [LabeledValueGroup!]
+  priceAndStocks: [LabeledValueGroup!]
+  variants: [ProductVariant!]!
+}
+
+type ProductImage {
+  url: String!
+}
+
+type LabeledValueGroup {
+  enLabel: String
+  values: [NamedValue!]!
+}
+
+type NamedValue {
+  enName: String
+}
+
+type ProductVariant {
+  mrpPrice: Float
+  ebsItemCode: String
+  posItemCode: String
+  quantity: Int
+  discount: ProductDiscount
+}
+
+type ProductDiscount {
+  amount: Float
+  value: Float
+  type: String
+}

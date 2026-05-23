@@ -1,0 +1,23 @@
+fragment ProductCardFields on Product {
+  uid
+  enName
+  images {
+    url
+  }
+  productAttributes {
+    enLabel
+    values {
+      enName
+    }
+  }
+  variants {
+    mrpPrice
+    posItemCode
+    quantity
+    discount {
+      amount
+      value
+      type
+    }
+  }
+}

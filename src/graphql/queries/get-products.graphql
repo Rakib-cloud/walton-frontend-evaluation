@@ -1,0 +1,14 @@
+#import "../fragments/product-card.graphql"
+
+query GetProducts($pagination: PaginationInput, $filter: ProductFilterInput) {
+  getProducts(pagination: $pagination, filter: $filter) {
+    message
+    statusCode
+    result {
+      count
+      products {
+        ...ProductCardFields
+      }
+    }
+  }
+}

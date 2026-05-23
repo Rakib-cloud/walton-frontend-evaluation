@@ -1,0 +1,16 @@
+#import "../fragments/product-detail.graphql"
+
+query GetProductByUid($uid: String!) {
+  getProducts(
+    pagination: { skip: 0, limit: 1 }
+    filter: { uid: $uid }
+  ) {
+    message
+    statusCode
+    result {
+      products {
+        ...ProductDetailFields
+      }
+    }
+  }
+}

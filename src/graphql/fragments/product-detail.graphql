@@ -1,0 +1,48 @@
+fragment ProductDetailFields on Product {
+  uid
+  enName
+  images {
+    url
+  }
+  productAttributes {
+    enLabel
+    values {
+      enName
+    }
+  }
+  detailedDescriptions {
+    enLabel
+    values {
+      enName
+    }
+  }
+  deliveries {
+    enLabel
+    values {
+      enName
+    }
+  }
+  serviceAndDeliveries {
+    enLabel
+    values {
+      enName
+    }
+  }
+  priceAndStocks {
+    enLabel
+    values {
+      enName
+    }
+  }
+  variants {
+    mrpPrice
+    ebsItemCode
+    posItemCode
+    quantity
+    discount {
+      amount
+      value
+      type
+    }
+  }
+}

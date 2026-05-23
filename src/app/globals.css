@@ -1,26 +1,97 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f5f5f5;
+  --foreground: #18181b;
+  --walton-blue: #142d84;
+  --walton-red: #ec1c24;
+  --walton-teal: #39a9bd;
+  --walton-navy: #1e3a5f;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-walton-blue: var(--walton-blue);
+  --color-walton-red: var(--walton-red);
+  --color-walton-teal: var(--walton-teal);
+  --color-walton-navy: var(--walton-navy);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+.price-range-input {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  transform: translateY(-50%);
+  appearance: none;
+  background: transparent;
+  pointer-events: none;
+}
+
+.price-range-input--min {
+  z-index: 3;
+}
+
+.price-range-input--max {
+  z-index: 4;
+}
+
+.price-range-input::-webkit-slider-runnable-track {
+  height: 0;
+  background: transparent;
+}
+
+.price-range-input::-webkit-slider-thumb {
+  appearance: none;
+  pointer-events: auto;
+  width: 18px;
+  height: 18px;
+  margin-top: -9px;
+  border-radius: 9999px;
+  border: 3px solid #39a9bd;
+  background: #fff;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.12);
+  cursor: grab;
+}
+
+.price-range-input:active::-webkit-slider-thumb {
+  cursor: grabbing;
+}
+
+.price-range-input::-moz-range-track {
+  height: 0;
+  background: transparent;
+  border: none;
+}
+
+.price-range-input::-moz-range-thumb {
+  pointer-events: auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  border: 3px solid #39a9bd;
+  background: #fff;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.12);
+  cursor: grab;
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
