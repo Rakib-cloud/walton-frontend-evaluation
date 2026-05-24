@@ -156,9 +156,9 @@ export function ProductsCatalog({
           </div>
         ) : (
           <ul className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            {visibleProducts.map((product) => (
+            {visibleProducts.map((product, index) => (
               <li key={product.uid} className="flex">
-                <ProductCard product={product} className="w-full" />
+                <ProductCard product={product} className="w-full" priority={index < 4} />
               </li>
             ))}
           </ul>

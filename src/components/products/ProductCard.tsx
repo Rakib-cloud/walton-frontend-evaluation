@@ -17,9 +17,10 @@ import { cn } from "@/lib/cn";
 type ProductCardProps = {
   product: CatalogProduct;
   className?: string;
+  priority?: boolean;
 };
 
-function ProductCardComponent({ product, className }: ProductCardProps) {
+function ProductCardComponent({ product, className, priority }: ProductCardProps) {
   const { primaryVariant } = product;
   const [wishlisted, setWishlisted] = useState(false);
   const inStock = isInStock(primaryVariant);
@@ -42,6 +43,7 @@ function ProductCardComponent({ product, className }: ProductCardProps) {
             alt={product.name}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 220px"
+            priority={priority}
             className="object-contain"
           />
         </div>
