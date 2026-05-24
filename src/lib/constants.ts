@@ -2,10 +2,6 @@ export const DEFAULT_PAGE_SIZE = 12;
 
 export const PRODUCT_PLACEHOLDER_IMAGE = "/images/product-placeholder.svg";
 
-export const WALTON_BLUE = "#142D84";
-export const WALTON_RED = "#EC1C24";
-export const BUY_NOW_BG = "#2b3d6d";
-export const WALTON_TEAL = "#39a9bd";
 export const CARD_SURFACE = "#fffff6";
 
 export const PRICE_FILTER_MIN = 0;

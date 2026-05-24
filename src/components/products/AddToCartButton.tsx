@@ -4,6 +4,7 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/features/cart/store/cart-store";
 import { cn } from "@/lib/cn";
+import { toast } from "sonner";
 
 type AddToCartButtonProps = {
   uid: string;
@@ -15,6 +16,7 @@ type AddToCartButtonProps = {
   className?: string;
   label?: string;
   variant?: "default" | "buyNow";
+  quantity?: number;
 };
 
 export function AddToCartButton({
@@ -27,6 +29,7 @@ export function AddToCartButton({
   className,
   label = "Add to Cart",
   variant = "default",
+  quantity = 1,
 }: AddToCartButtonProps) {
   const router = useRouter();
   const addItem = useCartStore((state) => state.addItem);
@@ -45,7 +48,8 @@ export function AddToCartButton({
         imageUrl: imageUrl ?? undefined,
         posItemCode,
         unitPrice,
-      });
+      }, quantity);
+      toast.success(`${name} added to cart!`);
       router.push("/cart");
     });
   };
@@ -56,7 +60,7 @@ export function AddToCartButton({
       disabled={disabled || isPending}
       onClick={handleClick}
       className={cn(
-        "inline-flex h-10 items-center justify-center rounded-md px-4 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60",
+        "inline-flex h-10 items-center justify-center rounded-md px-4 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer",
         variant === "buyNow"
           ? "bg-[#2b3d6d] text-white hover:bg-[#39a9bd]"
           : "bg-zinc-900 text-white hover:bg-zinc-800",

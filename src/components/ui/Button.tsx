@@ -28,7 +28,7 @@ export function Button({
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center rounded-lg font-medium transition-colors disabled:cursor-not-allowed",
+        "inline-flex items-center justify-center rounded-lg font-medium transition-colors disabled:cursor-not-allowed cursor-pointer",
         variantStyles[variant],
         sizeStyles[size],
         className,

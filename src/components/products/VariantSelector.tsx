@@ -32,7 +32,7 @@ export function VariantSelector({
                 onClick={() => onSelect(index)}
                 disabled={!inStock}
                 className={cn(
-                  "rounded-md border px-3 py-2 text-sm font-medium transition-colors",
+                  "rounded-md border px-3 py-2 text-sm font-medium transition-colors cursor-pointer",
                   index === selectedIndex
                     ? "border-[#142D84] bg-[#142D84] text-white"
                     : "border-zinc-300 bg-white text-zinc-800 hover:border-[#39a9bd]",

@@ -6,6 +6,7 @@ import { getFragmentData } from "@/graphql/generated";
 import {
   GetProductByUidDocument,
   ProductDetailFieldsFragmentDoc,
+  GetProductsDocument,
 } from "@/graphql/generated/graphql";
 
 type ProductDetailPageProps = {
@@ -57,5 +58,13 @@ export default async function ProductDetailPage({
 
   const product = getFragmentData(ProductDetailFieldsFragmentDoc, productRef);
 
-  return <ProductDetailView product={product} />;
+  // Fetch related products
+  const { data: relatedData } = await getClient().query({
+    query: GetProductsDocument,
+    variables: { pagination: { limit: 4 } },
+  });
+
+  const relatedProducts = relatedData?.getProducts?.result?.products ?? [];
+
+  return <ProductDetailView product={product} relatedProducts={relatedProducts} />;
 }

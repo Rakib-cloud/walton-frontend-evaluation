@@ -86,9 +86,9 @@ export function ProductDetailInfo({ product }: ProductDetailInfoProps) {
   }, [product]);
 
   return (
-    <section aria-label="Product information">
+    <section aria-label={`Details of ${product.enName ?? "product"}`}>
       <h2 className="mb-4 text-lg font-semibold text-[#1e3a5f]">
-        Product Information
+        Details of {product.enName ?? "Product"}
       </h2>
       <ProductDetailTabs tabs={tabs} />
     </section>

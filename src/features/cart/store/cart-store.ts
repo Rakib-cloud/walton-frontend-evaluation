@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import { toast } from "sonner";
 
 export type CartItem = {
   uid: string;
@@ -48,6 +49,10 @@ export const useCartStore = create<CartState>()(
       },
 
       removeItem: (posItemCode) => {
+        const item = get().items.find((i) => i.posItemCode === posItemCode);
+        if (item) {
+          toast.error(`${item.name} removed from cart`);
+        }
         set((state) => ({
           items: state.items.filter((item) => item.posItemCode !== posItemCode),
         }));

@@ -70,7 +70,7 @@ export function ProductFiltersBar({
         <button
           type="button"
           onClick={() => router.replace("/products", { scroll: false })}
-          className="text-xs font-medium text-[#142D84] hover:underline"
+          className="text-xs font-medium text-[#142D84] hover:underline cursor-pointer"
         >
           Reset all
         </button>

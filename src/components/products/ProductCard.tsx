@@ -94,7 +94,7 @@ function ProductCardComponent({ product, className }: ProductCardProps) {
               setWishlisted((value) => !value);
             }}
             className={cn(
-              "flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#dbe4f0] bg-white transition-colors hover:border-[#39a9bd]",
+              "flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#dbe4f0] bg-white transition-colors hover:border-[#39a9bd] cursor-pointer",
               wishlisted && "border-[#ec1c24] text-[#ec1c24]",
             )}
             aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}

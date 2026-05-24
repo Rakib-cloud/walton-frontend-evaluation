@@ -39,7 +39,7 @@ export function ProductDetailTabs({ tabs }: ProductDetailTabsProps) {
             aria-selected={tab.id === activeTab.id}
             onClick={() => setActiveId(tab.id)}
             className={cn(
-              "shrink-0 rounded-md px-4 py-2.5 text-sm font-medium transition-colors",
+              "shrink-0 rounded-md px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer",
               tab.id === activeTab.id
                 ? "bg-[#142D84] text-white shadow-sm"
                 : "text-zinc-600 hover:bg-white hover:text-[#1e3a5f]",

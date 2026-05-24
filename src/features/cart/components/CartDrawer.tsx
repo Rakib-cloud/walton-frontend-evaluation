@@ -22,7 +22,7 @@ export function CartDrawer({ subtotal, onClose }: CartDrawerProps) {
       <button
         type="button"
         aria-label="Close cart overlay"
-        className="absolute inset-0 bg-black/40"
+        className="absolute inset-0 bg-black/40 cursor-pointer"
         onClick={onClose}
       />
 
@@ -32,7 +32,7 @@ export function CartDrawer({ subtotal, onClose }: CartDrawerProps) {
           <button
             type="button"
             onClick={onClose}
-            className="text-sm text-zinc-500 hover:text-zinc-800"
+            className="text-sm text-zinc-500 hover:text-zinc-800 cursor-pointer"
           >
             Close
           </button>
@@ -70,7 +70,7 @@ export function CartDrawer({ subtotal, onClose }: CartDrawerProps) {
                         onClick={() =>
                           updateQuantity(item.posItemCode, item.quantity - 1)
                         }
-                        className="h-7 w-7 rounded border border-zinc-300 text-sm"
+                        className="h-7 w-7 rounded border border-zinc-300 text-sm cursor-pointer"
                         aria-label="Decrease quantity"
                       >
                         -
@@ -83,7 +83,7 @@ export function CartDrawer({ subtotal, onClose }: CartDrawerProps) {
                         onClick={() =>
                           updateQuantity(item.posItemCode, item.quantity + 1)
                         }
-                        className="h-7 w-7 rounded border border-zinc-300 text-sm"
+                        className="h-7 w-7 rounded border border-zinc-300 text-sm cursor-pointer"
                         aria-label="Increase quantity"
                       >
                         +
@@ -91,7 +91,7 @@ export function CartDrawer({ subtotal, onClose }: CartDrawerProps) {
                       <button
                         type="button"
                         onClick={() => removeItem(item.posItemCode)}
-                        className="ml-auto text-xs text-red-600 hover:text-red-700"
+                        className="ml-auto text-xs text-red-600 hover:text-red-700 cursor-pointer"
                       >
                         Remove
                       </button>

@@ -103,7 +103,7 @@ export function ProductGallery({
                 e.stopPropagation();
                 goTo(activeIndex - 1);
               }}
-              className="absolute left-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-200 bg-white/95 text-zinc-700 shadow-xs transition-all hover:scale-105 hover:border-walton-teal hover:text-walton-teal lg:opacity-0 lg:group-hover:opacity-100 focus:outline-none"
+              className="absolute left-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-200 bg-white/95 text-zinc-700 shadow-xs transition-all hover:scale-105 hover:border-walton-teal hover:text-walton-teal lg:opacity-0 lg:group-hover:opacity-100 focus:outline-none cursor-pointer"
               aria-label="Previous image"
             >
               <ChevronLeftIcon className="h-4.5 w-4.5" />
@@ -114,7 +114,7 @@ export function ProductGallery({
                 e.stopPropagation();
                 goTo(activeIndex + 1);
               }}
-              className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-200 bg-white/95 text-zinc-700 shadow-xs transition-all hover:scale-105 hover:border-walton-teal hover:text-walton-teal lg:opacity-0 lg:group-hover:opacity-100 focus:outline-none"
+              className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-200 bg-white/95 text-zinc-700 shadow-xs transition-all hover:scale-105 hover:border-walton-teal hover:text-walton-teal lg:opacity-0 lg:group-hover:opacity-100 focus:outline-none cursor-pointer"
               aria-label="Next image"
             >
               <ChevronRightIcon className="h-4.5 w-4.5" />
@@ -127,7 +127,7 @@ export function ProductGallery({
       </div>
 
       {/* Styled Thumbnails Selector */}
-      {hasMultiple ? (
+      {slides.length >= 1 ? (
         <div className="relative">
           <ul className="flex gap-3 overflow-x-auto pb-2 scrollbar-none snap-x snap-mandatory scroll-smooth">
             {slides.map((url, index) => (
@@ -136,7 +136,7 @@ export function ProductGallery({
                   type="button"
                   onClick={() => setActiveIndex(index)}
                   className={cn(
-                    "relative block h-16 w-16 sm:h-20 sm:w-20 overflow-hidden rounded-lg border-2 bg-white transition-all duration-300 ease-out shadow-xs",
+                    "relative block h-16 w-16 sm:h-20 sm:w-20 overflow-hidden rounded-lg border-2 bg-white transition-all duration-300 ease-out shadow-xs cursor-pointer",
                     index === activeIndex
                       ? "border-walton-blue ring-3 ring-walton-blue/10 scale-95"
                       : "border-zinc-200 hover:border-walton-teal hover:-translate-y-0.5 hover:shadow-md active:scale-95",
@@ -176,7 +176,7 @@ export function ProductGallery({
             <button
               type="button"
               onClick={() => setIsLightboxOpen(false)}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-all hover:bg-white/20 hover:scale-105 focus:outline-none"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-all hover:bg-white/20 hover:scale-105 focus:outline-none cursor-pointer"
               aria-label="Close fullscreen"
             >
               <CloseIcon className="h-6 w-6" />
@@ -189,7 +189,7 @@ export function ProductGallery({
               <button
                 type="button"
                 onClick={() => goTo(activeIndex - 1)}
-                className="absolute left-4 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white transition-all hover:bg-white/20 hover:scale-105 active:scale-95 focus:outline-none"
+                className="absolute left-4 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white transition-all hover:bg-white/20 hover:scale-105 active:scale-95 focus:outline-none cursor-pointer"
                 aria-label="Previous image"
               >
                 <ChevronLeftIcon className="h-6 w-6" />
@@ -212,7 +212,7 @@ export function ProductGallery({
               <button
                 type="button"
                 onClick={() => goTo(activeIndex + 1)}
-                className="absolute right-4 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white transition-all hover:bg-white/20 hover:scale-105 active:scale-95 focus:outline-none"
+                className="absolute right-4 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white transition-all hover:bg-white/20 hover:scale-105 active:scale-95 focus:outline-none cursor-pointer"
                 aria-label="Next image"
               >
                 <ChevronRightIcon className="h-6 w-6" />
@@ -221,7 +221,7 @@ export function ProductGallery({
           </div>
 
           {/* Bottom Thumbnails Navigation in Lightbox */}
-          {hasMultiple && (
+          {slides.length >= 1 && (
             <div className="w-full bg-gradient-to-t from-black/50 to-transparent p-4 sm:p-6 flex flex-col items-center gap-3">
               <ul className="flex gap-2.5 overflow-x-auto max-w-full pb-2 scrollbar-none">
                 {slides.map((url, index) => (
@@ -230,7 +230,7 @@ export function ProductGallery({
                       type="button"
                       onClick={() => setActiveIndex(index)}
                       className={cn(
-                        "relative block h-12 w-12 sm:h-16 sm:w-16 overflow-hidden rounded-md border-2 bg-zinc-900 transition-all",
+                        "relative block h-12 w-12 sm:h-16 sm:w-16 overflow-hidden rounded-md border-2 bg-zinc-900 transition-all cursor-pointer",
                         index === activeIndex
                           ? "border-walton-teal scale-105 shadow-lg shadow-walton-teal/20"
                           : "border-zinc-700 hover:border-zinc-500",
