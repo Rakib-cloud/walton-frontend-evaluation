@@ -12,7 +12,7 @@ export function Header() {
           className="inline-flex items-center"
           aria-label={`${env.NEXT_PUBLIC_APP_NAME} home`}
         >
-          <WaltonPlazaLogo className="h-6 sm:h-7" />
+          <WaltonPlazaLogo className="h-4 sm:h-6" />
         </Link>
         <nav className="flex items-center gap-4 text-sm font-medium text-zinc-600">
           <Link href="/products" className="transition-colors hover:text-zinc-900">

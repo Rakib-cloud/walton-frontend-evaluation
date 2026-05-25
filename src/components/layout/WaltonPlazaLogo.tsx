@@ -7,13 +7,11 @@ type WaltonPlazaLogoProps = {
 export function WaltonPlazaLogo({ className }: WaltonPlazaLogoProps) {
   return (
     <svg
-      width="216"
-      height="21"
       viewBox="0 0 216 21"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
-      className={cn("h-5 w-auto", className)}
+      className={cn("h-5 w-auto shrink-0", className)}
     >
       <path
         fillRule="evenodd"

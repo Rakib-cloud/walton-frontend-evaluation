@@ -225,7 +225,7 @@ export function ProductDetailSummary({
             unitPrice={sellingPrice}
             disabled={!inStock}
             quantity={quantity}
-            label="Buy Now - Click Here For Find Stock -"
+            label="Buy Now"
             variant="buyNow"
             className="flex-1 rounded-none bg-transparent hover:bg-transparent h-auto py-3 text-xs sm:text-sm font-extrabold text-white cursor-pointer"
           />

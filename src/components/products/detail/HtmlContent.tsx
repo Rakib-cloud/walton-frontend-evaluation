@@ -29,9 +29,11 @@ export function HtmlContent({ content, className }: HtmlContentProps) {
   }
 
   return (
-    <div
-      className={cn("product-html text-sm leading-relaxed text-zinc-600", className)}
-      dangerouslySetInnerHTML={{ __html: sanitized }}
-    />
+    <div className="w-full overflow-x-auto scrollbar-thin">
+      <div
+        className={cn("product-html text-sm leading-relaxed text-zinc-600 min-w-full inline-block", className)}
+        dangerouslySetInnerHTML={{ __html: sanitized }}
+      />
+    </div>
   );
 }

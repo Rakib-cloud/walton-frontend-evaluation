@@ -52,7 +52,7 @@ export function ProductSortBar({ itemCount, categoryLabel }: ProductSortBarProps
     : `${itemCount} items found`;
 
   return (
-    <div className="mb-5 flex flex-wrap items-center justify-between gap-4 rounded-lg border border-zinc-200 bg-white px-4 py-3">
+    <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-zinc-200 bg-white px-4 py-3">
       <p className="flex items-center gap-2 text-sm text-zinc-700">
         <ListIcon className="h-4 w-4 text-zinc-500" />
         <span>{label}</span>

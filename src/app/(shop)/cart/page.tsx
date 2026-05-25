@@ -31,10 +31,10 @@ export default function CartPage() {
 
   if (!hasMounted) {
     return (
-      <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:py-12 sm:px-6 lg:px-8">
         <Skeleton className="h-10 w-56 mb-8" />
 
-        <div className="grid gap-8 lg:grid-cols-3 lg:items-start">
+        <div className="grid grid-cols-1 gap-6 lg:gap-8 lg:grid-cols-3 lg:items-start">
           {/* Items List Skeleton */}
           <div className="space-y-4 lg:col-span-2">
             <div className="rounded-2xl border border-zinc-200 bg-white overflow-hidden shadow-xs">
@@ -45,26 +45,29 @@ export default function CartPage() {
 
               <ul className="divide-y divide-zinc-150">
                 {[1, 2].map((i) => (
-                  <li key={i} className="p-6 flex flex-col sm:flex-row gap-4 sm:items-center">
+                  <li key={i} className="p-4 sm:p-6 flex gap-4 items-start sm:items-center">
                     {/* Image Skeleton */}
                     <Skeleton className="h-20 w-20 shrink-0 rounded-xl" />
 
-                    {/* Description Skeleton */}
-                    <div className="flex-1 min-w-0 space-y-2">
-                      <Skeleton className="h-5 w-3/4" />
-                      <Skeleton className="h-4 w-24" />
-                    </div>
+                    {/* Right/Content Side */}
+                    <div className="flex-1 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 min-w-0">
+                      {/* Description Skeleton */}
+                      <div className="flex-1 min-w-0 space-y-2">
+                        <Skeleton className="h-5 w-3/4" />
+                        <Skeleton className="h-4 w-24" />
+                      </div>
 
-                    {/* Quantity & Actions Skeleton */}
-                    <div className="flex items-center gap-3 mt-3 sm:mt-0">
-                      <Skeleton className="h-8 w-24 rounded-lg" />
-                      <Skeleton className="h-8 w-8 rounded-md" />
-                    </div>
+                      {/* Quantity & Actions Skeleton */}
+                      <div className="flex items-center justify-between sm:justify-start gap-4 mt-2 sm:mt-0 w-full sm:w-auto">
+                        <Skeleton className="h-8 w-24 rounded-lg" />
+                        <Skeleton className="h-8 w-8 rounded-md" />
+                      </div>
 
-                    {/* Total Price Skeleton */}
-                    <div className="hidden sm:block text-right min-w-[100px] pl-4 space-y-1">
-                      <Skeleton className="h-5 w-20 ml-auto" />
-                      <Skeleton className="h-3.5 w-12 ml-auto" />
+                      {/* Total Price Skeleton */}
+                      <div className="hidden sm:block text-right min-w-[100px] pl-4 space-y-1">
+                        <Skeleton className="h-5 w-20 ml-auto" />
+                        <Skeleton className="h-3.5 w-12 ml-auto" />
+                      </div>
                     </div>
                   </li>
                 ))}
@@ -108,7 +111,7 @@ export default function CartPage() {
   const orderTotal = subtotal + shippingCost;
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <main className="mx-auto max-w-7xl px-4 py-8 sm:py-12 sm:px-6 lg:px-8">
       <h1 className="text-3xl font-extrabold tracking-tight text-zinc-950 sm:text-4xl mb-8">
         Shopping Cart
       </h1>
@@ -130,7 +133,7 @@ export default function CartPage() {
           </Link>
         </div>
       ) : (
-        <div className="grid gap-8 lg:grid-cols-3 lg:items-start">
+        <div className="grid grid-cols-1 gap-6 lg:gap-8 lg:grid-cols-3 lg:items-start">
           {/* Items List */}
           <div className="space-y-4 lg:col-span-2">
             <div className="rounded-2xl border border-zinc-200 bg-white shadow-xs overflow-hidden">
@@ -149,7 +152,7 @@ export default function CartPage() {
 
               <ul className="divide-y divide-zinc-150">
                 {items.map((item) => (
-                  <li key={item.posItemCode} className="p-6 flex flex-col sm:flex-row gap-4 sm:items-center">
+                  <li key={item.posItemCode} className="p-4 sm:p-6 flex gap-4 items-start sm:items-center">
                     {/* Image */}
                     <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-zinc-200 bg-white p-2">
                       <ProductImage
@@ -161,64 +164,75 @@ export default function CartPage() {
                       />
                     </div>
 
-                    {/* Description */}
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-sm font-semibold text-[#1e3a5f] truncate hover:text-walton-blue">
-                        <Link href={`/products/${item.uid}`}>
-                          {item.name}
-                        </Link>
-                      </h3>
-                      <p className="text-xs text-zinc-400 mt-0.5">
-                        Code: {item.posItemCode}
-                      </p>
-                      <p className="text-sm font-semibold text-zinc-900 mt-2 sm:hidden">
-                        {formatCurrency(item.unitPrice)}
-                      </p>
-                    </div>
+                    {/* Right/Content Side */}
+                    <div className="flex-1 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 min-w-0">
+                      {/* Description */}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-sm font-semibold text-[#1e3a5f] hover:text-walton-blue line-clamp-2 sm:truncate">
+                          <Link href={`/products/${item.uid}`}>
+                            {item.name}
+                          </Link>
+                        </h3>
+                        <p className="text-xs text-zinc-400 mt-0.5">
+                          Code: {item.posItemCode}
+                        </p>
+                        <div className="flex items-center gap-2 mt-1 sm:hidden">
+                          <span className="text-xs text-zinc-500">{formatCurrency(item.unitPrice)} each</span>
+                        </div>
+                      </div>
 
-                    {/* Quantity Control */}
-                    <div className="flex items-center gap-3 mt-3 sm:mt-0">
-                      <div className="flex items-center rounded-lg border border-zinc-300 bg-zinc-55">
+                      {/* Controls and Prices */}
+                      <div className="flex items-center justify-between sm:justify-start gap-4 mt-2 sm:mt-0 w-full sm:w-auto">
+                        {/* Quantity Control */}
+                        <div className="flex items-center rounded-lg border border-zinc-300 bg-zinc-50">
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(item.posItemCode, item.quantity - 1)}
+                            className="h-8 w-8 flex items-center justify-center text-zinc-600 hover:text-zinc-950 font-medium transition-colors cursor-pointer"
+                            aria-label="Decrease quantity"
+                          >
+                            -
+                          </button>
+                          <span className="min-w-8 text-center text-sm font-semibold text-zinc-900">
+                            {item.quantity}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(item.posItemCode, item.quantity + 1)}
+                            className="h-8 w-8 flex items-center justify-center text-zinc-600 hover:text-zinc-950 font-medium transition-colors cursor-pointer"
+                            aria-label="Increase quantity"
+                          >
+                            +
+                          </button>
+                        </div>
+
+                        {/* Price block for mobile, inline with controls */}
+                        <div className="text-right sm:hidden">
+                          <p className="text-sm font-bold text-[#1e3a5f]">
+                            {formatCurrency(item.unitPrice * item.quantity)}
+                          </p>
+                        </div>
+
+                        {/* Remove Button */}
                         <button
                           type="button"
-                          onClick={() => updateQuantity(item.posItemCode, item.quantity - 1)}
-                          className="h-8 w-8 flex items-center justify-center text-zinc-600 hover:text-zinc-950 font-medium transition-colors cursor-pointer"
-                          aria-label="Decrease quantity"
+                          onClick={() => removeItem(item.posItemCode)}
+                          className="p-1.5 text-zinc-400 hover:text-red-600 transition-colors rounded-md hover:bg-zinc-50 cursor-pointer"
+                          aria-label="Remove item"
                         >
-                          -
-                        </button>
-                        <span className="min-w-8 text-center text-sm font-semibold text-zinc-900">
-                          {item.quantity}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => updateQuantity(item.posItemCode, item.quantity + 1)}
-                          className="h-8 w-8 flex items-center justify-center text-zinc-600 hover:text-zinc-950 font-medium transition-colors cursor-pointer"
-                          aria-label="Increase quantity"
-                        >
-                          +
+                          <TrashIcon className="h-5 w-5" />
                         </button>
                       </div>
 
-                      {/* Remove Button */}
-                      <button
-                        type="button"
-                        onClick={() => removeItem(item.posItemCode)}
-                        className="p-1.5 text-zinc-400 hover:text-red-600 transition-colors rounded-md hover:bg-zinc-50 cursor-pointer"
-                        aria-label="Remove item"
-                      >
-                        <TrashIcon className="h-5 w-5" />
-                      </button>
-                    </div>
-
-                    {/* Total Price */}
-                    <div className="hidden sm:block text-right min-w-[100px] pl-4">
-                      <p className="text-sm font-bold text-[#1e3a5f]">
-                        {formatCurrency(item.unitPrice * item.quantity)}
-                      </p>
-                      <p className="text-[11px] text-zinc-400">
-                        {formatCurrency(item.unitPrice)} each
-                      </p>
+                      {/* Total Price for Desktop */}
+                      <div className="hidden sm:block text-right min-w-[100px] pl-4">
+                        <p className="text-sm font-bold text-[#1e3a5f]">
+                          {formatCurrency(item.unitPrice * item.quantity)}
+                        </p>
+                        <p className="text-[11px] text-zinc-400">
+                          {formatCurrency(item.unitPrice)} each
+                        </p>
+                      </div>
                     </div>
                   </li>
                 ))}

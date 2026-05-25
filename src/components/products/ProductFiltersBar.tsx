@@ -9,10 +9,13 @@ import { filtersToSearchParams } from "@/features/products/types/filters";
 import { cn } from "@/lib/cn";
 import { PRICE_FILTER_BOUNDS } from "@/lib/constants";
 
+import { CloseIcon } from "@/components/ui/Icons";
+
 type ProductFiltersBarProps = {
   categories: string[];
   brands: string[];
   className?: string;
+  onClose?: () => void;
 };
 
 const CHECKBOX_CLASS =
@@ -22,6 +25,7 @@ export function ProductFiltersBar({
   categories,
   brands,
   className,
+  onClose,
 }: ProductFiltersBarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -50,8 +54,9 @@ export function ProductFiltersBar({
       const next = { ...filters, ...patch, sort };
       const params = filtersToSearchParams(next);
       router.replace(`/products?${params.toString()}`, { scroll: false });
+      if (onClose) onClose();
     },
-    [filters, router, searchParams],
+    [filters, router, searchParams, onClose],
   );
 
   const sliderMin = filters.minPrice ?? PRICE_FILTER_BOUNDS.min;
@@ -61,19 +66,34 @@ export function ProductFiltersBar({
   return (
     <aside
       className={cn(
-        "space-y-3 lg:sticky lg:top-0 lg:max-h-full lg:self-start lg:overflow-y-auto lg:overscroll-y-contain lg:pr-1 scrollbar-none",
+        "space-y-3 lg:sticky lg:top-0 lg:max-h-[calc(100vh-8rem)] lg:self-start lg:overflow-y-auto lg:overscroll-y-contain lg:pr-1 scrollbar-none",
         className,
       )}
     >
       <div className="flex items-center justify-between px-1">
         <h2 className="text-base font-semibold text-[#1e3a5f]">Filters</h2>
-        <button
-          type="button"
-          onClick={() => router.replace("/products", { scroll: false })}
-          className="text-xs font-medium text-[#142D84] hover:underline cursor-pointer"
-        >
-          Reset all
-        </button>
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => {
+              router.replace("/products", { scroll: false });
+              if (onClose) onClose();
+            }}
+            className="text-xs font-medium text-[#142D84] hover:underline cursor-pointer"
+          >
+            Reset all
+          </button>
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="lg:hidden text-zinc-500 hover:text-zinc-900 cursor-pointer p-1"
+              aria-label="Close filters"
+            >
+              <CloseIcon className="h-5 w-5" />
+            </button>
+          )}
+        </div>
       </div>
 
       <FilterSection title="Brand">

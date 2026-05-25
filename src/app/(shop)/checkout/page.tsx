@@ -51,19 +51,19 @@ export default function CheckoutPage() {
 
   if (!hasMounted) {
     return (
-      <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:py-12 sm:px-6 lg:px-8">
         <Skeleton className="h-10 w-40 mb-8" />
 
-        <div className="grid gap-8 lg:grid-cols-3 lg:items-start">
+        <div className="grid grid-cols-1 gap-6 lg:gap-8 lg:grid-cols-3 lg:items-start">
           {/* Shipping Form & Payment Method (Left 2 cols) */}
           <div className="space-y-6 lg:col-span-2">
             {/* Section 1: Shipping Information Card */}
-            <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-xs space-y-6">
+            <div className="rounded-2xl border border-zinc-200 bg-white p-4 sm:p-6 shadow-xs space-y-6">
               <div className="border-b border-zinc-100 pb-3">
                 <Skeleton className="h-6 w-52" />
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="sm:col-span-2 space-y-2">
                   <Skeleton className="h-4 w-20" />
                   <Skeleton className="h-11 w-full rounded-lg" />
@@ -88,12 +88,12 @@ export default function CheckoutPage() {
             </div>
 
             {/* Section 2: Payment options */}
-            <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-xs space-y-4">
+            <div className="rounded-2xl border border-zinc-200 bg-white p-4 sm:p-6 shadow-xs space-y-4">
               <div className="border-b border-zinc-100 pb-3">
                 <Skeleton className="h-6 w-44" />
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <Skeleton className="h-28 w-full rounded-xl" />
                 <Skeleton className="h-28 w-full rounded-xl" />
               </div>
@@ -101,7 +101,7 @@ export default function CheckoutPage() {
           </div>
 
           {/* Order details panel (Right 1 col) */}
-          <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-xs lg:col-span-1 space-y-6">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4 sm:p-6 shadow-xs lg:col-span-1 space-y-6">
             <div className="border-b border-zinc-100 pb-4">
               <Skeleton className="h-6 w-36" />
             </div>
@@ -218,22 +218,22 @@ export default function CheckoutPage() {
   };
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-extrabold tracking-tight text-zinc-950 mb-8">
+    <main className="mx-auto max-w-7xl px-4 py-8 sm:py-12 sm:px-6 lg:px-8">
+      <h1 className="text-3xl font-extrabold tracking-tight text-zinc-950 sm:text-4xl mb-8">
         Checkout
       </h1>
 
-      <form onSubmit={handlePlaceOrder} className="grid gap-8 lg:grid-cols-3 lg:items-start">
+      <form onSubmit={handlePlaceOrder} className="grid grid-cols-1 gap-6 lg:gap-8 lg:grid-cols-3 lg:items-start">
         {/* Shipping Form & Payment Method (Left 2 cols) */}
         <div className="space-y-6 lg:col-span-2">
           {/* Section 1: Shipping details */}
-          <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-xs space-y-4">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4 sm:p-6 shadow-xs space-y-4">
             <h2 className="text-lg font-bold text-[#1e3a5f] border-b border-zinc-100 pb-3 flex items-center gap-2">
               <MapPinIcon className="h-5 w-5 text-walton-teal" />
               Shipping Information
             </h2>
 
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <InputField
                 id="fullName"
                 label="Full Name"
@@ -291,15 +291,15 @@ export default function CheckoutPage() {
           </div>
 
           {/* Section 2: Payment options */}
-          <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-xs space-y-4">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4 sm:p-6 shadow-xs space-y-4">
             <h2 className="text-lg font-bold text-[#1e3a5f] border-b border-zinc-100 pb-3 flex items-center gap-2">
               <CreditCardIcon className="h-5 w-5 text-walton-teal" />
               Payment Method
             </h2>
 
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {/* Cash On Delivery Option */}
-              <label className={`relative flex items-start gap-4 rounded-xl border p-4 cursor-pointer transition-all ${
+              <label className={`relative flex items-start gap-3 sm:gap-4 rounded-xl border p-3 sm:p-4 cursor-pointer transition-all ${
                 paymentMethod === "cod"
                   ? "border-walton-blue bg-walton-blue/5 ring-2 ring-walton-blue/10"
                   : "border-zinc-200 hover:border-zinc-300"
@@ -310,7 +310,7 @@ export default function CheckoutPage() {
                   value="cod"
                   checked={paymentMethod === "cod"}
                   onChange={() => setPaymentMethod("cod")}
-                  className="mt-1 h-4 w-4 border-zinc-300 text-walton-blue focus:ring-walton-blue"
+                  className="mt-1 h-4 w-4 border-zinc-300 text-walton-blue focus:ring-walton-blue shrink-0"
                 />
                 <div className="flex-1">
                   <span className="block text-sm font-bold text-zinc-900">Cash on Delivery (COD)</span>
@@ -324,12 +324,12 @@ export default function CheckoutPage() {
               </label>
 
               {/* Disabled Digital Payment Option (Mock only) */}
-              <div className="relative flex items-start gap-4 rounded-xl border border-zinc-200 p-4 opacity-50 cursor-not-allowed">
+              <div className="relative flex items-start gap-3 sm:gap-4 rounded-xl border border-zinc-200 p-3 sm:p-4 opacity-50 cursor-not-allowed">
                 <input
                   type="radio"
                   name="payment"
                   disabled
-                  className="mt-1 h-4 w-4 border-zinc-300 text-zinc-300"
+                  className="mt-1 h-4 w-4 border-zinc-300 text-zinc-300 shrink-0"
                 />
                 <div className="flex-1">
                   <span className="block text-sm font-bold text-zinc-400">Card / Mobile Banking</span>
@@ -346,7 +346,7 @@ export default function CheckoutPage() {
         </div>
 
         {/* Order details panel (Right 1 col) */}
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-xs lg:col-span-1 space-y-6">
+        <div className="rounded-2xl border border-zinc-200 bg-white p-4 sm:p-6 shadow-xs lg:col-span-1 space-y-6">
           <h2 className="text-lg font-bold text-[#1e3a5f] border-b border-zinc-100 pb-4">
             Items in Order
           </h2>

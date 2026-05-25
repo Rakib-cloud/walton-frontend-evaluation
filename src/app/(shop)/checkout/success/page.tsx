@@ -72,12 +72,12 @@ export default function CheckoutSuccessPage() {
 
       <div className="space-y-6">
         {/* Card 1: Order Details */}
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-xs space-y-4">
+        <div className="rounded-2xl border border-zinc-200 bg-white p-4 sm:p-6 shadow-xs space-y-4">
           <h2 className="text-sm font-bold text-[#1e3a5f] uppercase tracking-wider border-b border-zinc-100 pb-2">
             Order Information
           </h2>
 
-          <div className="grid gap-y-3 sm:grid-cols-2 sm:gap-x-4 text-sm">
+          <div className="grid grid-cols-1 gap-y-3 sm:grid-cols-2 sm:gap-x-4 text-sm">
             <div>
               <span className="text-zinc-500 block">Order ID</span>
               <span className="font-bold text-[#142D84] text-base">{displayOrder.orderId}</span>
@@ -102,12 +102,12 @@ export default function CheckoutSuccessPage() {
         </div>
 
         {/* Card 2: Shipping Details */}
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-xs space-y-4">
+        <div className="rounded-2xl border border-zinc-200 bg-white p-4 sm:p-6 shadow-xs space-y-4">
           <h2 className="text-sm font-bold text-[#1e3a5f] uppercase tracking-wider border-b border-zinc-100 pb-2">
             Shipping & Contact Details
           </h2>
 
-          <div className="grid gap-y-3 sm:grid-cols-2 sm:gap-x-4 text-sm">
+          <div className="grid grid-cols-1 gap-y-3 sm:grid-cols-2 sm:gap-x-4 text-sm">
             <div className="sm:col-span-2">
               <span className="text-zinc-500 block">Customer Name</span>
               <span className="font-semibold text-zinc-900">{displayOrder.fullName}</span>

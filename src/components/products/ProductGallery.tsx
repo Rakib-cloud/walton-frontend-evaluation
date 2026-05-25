@@ -86,7 +86,6 @@ export function ProductGallery({
 
         {/* Dynamic Zoom Component */}
         <ProductImageZoom
-          key={activeSrc}
           src={activeSrc}
           alt={productName}
           zoomFactor={2.5}

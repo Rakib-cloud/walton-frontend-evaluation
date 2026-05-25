@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { PRODUCT_PLACEHOLDER_IMAGE } from "@/lib/constants";
 import { cn } from "@/lib/cn";
@@ -25,6 +25,10 @@ export function ProductImageZoom({
   const [failed, setFailed] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    setFailed(false);
+  }, [src]);
 
   const imageSrc = failed ? PRODUCT_PLACEHOLDER_IMAGE : src;
 

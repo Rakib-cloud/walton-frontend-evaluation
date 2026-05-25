@@ -9,10 +9,10 @@ export function Footer() {
     <footer className="mt-12 bg-[#e2f0f4] border-t border-zinc-200 text-zinc-800">
       {/* Top Footer Columns */}
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-6 gap-x-4 gap-y-8 sm:gap-8">
           
           {/* Column 1: Brand & Contact Info */}
-          <div className="space-y-4 sm:col-span-2 md:col-span-2">
+          <div className="space-y-4 col-span-2 sm:col-span-2 md:col-span-2 flex flex-col items-center text-center sm:items-start sm:text-left">
             <WaltonPlazaLogo className="h-7 w-auto" />
             
             <div className="space-y-2">
@@ -32,7 +32,7 @@ export function Footer() {
               <h4 className="text-xs font-bold text-[#1e3a5f] uppercase tracking-wider">
                 Stay in touch with us
               </h4>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center sm:justify-start gap-3">
                 {/* Facebook */}
                 <a
                   href="https://facebook.com"
@@ -155,6 +155,7 @@ export function Footer() {
                 src="/images/paymentMethod.png"
                 alt="Payment Methods (Cash On Delivery, Visa, MasterCard, bKash, Rocket, Nagad, DBBL)"
                 fill
+                priority
                 sizes="(max-width: 640px) 100vw, 480px"
                 className="object-contain"
               />

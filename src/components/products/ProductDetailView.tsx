@@ -97,10 +97,10 @@ export function ProductDetailView({ product, relatedProducts }: ProductDetailVie
     <article className="space-y-8">
       <ProductDetailBreadcrumb productName={productName} />
 
-      <div className="grid gap-8 lg:grid-cols-4 lg:items-start">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-4 lg:items-start">
         {/* Main Content Area */}
-        <div className="lg:col-span-3 space-y-10">
-          <div className="grid gap-8 md:grid-cols-2 lg:gap-12 bg-white rounded-2xl border border-zinc-200 p-6 shadow-xs">
+        <div className="lg:col-span-3 space-y-8 lg:space-y-10">
+          <div className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:gap-12 bg-white rounded-2xl border border-zinc-200 p-4 sm:p-6 shadow-xs">
             <ProductGallery
               images={images}
               productName={productName}
