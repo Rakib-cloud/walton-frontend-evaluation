@@ -209,6 +209,46 @@ This section maps the requested evaluation criteria directly to their specific f
 
 ---
 
+## 🚀 Future Roadmap: Leveraging Modern React 19 Features
+
+To take the project further, several advanced React 19 patterns can be implemented to streamline code structures and enhance user experience:
+
+### 1. Form Actions and `useActionState`
+Currently, the checkout form manages error states and pending flags using separate local state variables. In React 19, we can refactor this using Form Actions and the `useActionState` hook:
+```tsx
+const [state, formAction, isPending] = useActionState(placeOrderAction, null);
+```
+* **Impact**: Eliminates verbose validation states, automatically handles client/server submission delays, and manages fields errors natively.
+
+### 2. Decoupled Form Status with `useFormStatus`
+The CTA checkout buttons located deep inside order summary sidebars can read parent form pending states directly without manual prop-drilling:
+```tsx
+import { useFormStatus } from "react-dom";
+const { pending } = useFormStatus();
+```
+* **Impact**: Simplifies component tree and avoids unnecessary wrapper hooks.
+
+### 3. Immediate Badge & Cart Updates via `useOptimistic`
+Instead of waiting for store calculations and Next.js page state synchronization during cart actions, we can render temporary local updates immediately:
+```tsx
+const [optimisticCart, setOptimisticCart] = useOptimistic(cartItems, updateItemQtyReducer);
+```
+* **Impact**: Visually instantaneous cart quantities and badge update times.
+
+### 4. Direct Promise Resolution in Render using `use()`
+We can pass query promises directly from parent Server Components down to client elements, rendering layouts as the data resolves:
+```tsx
+import { use } from "react";
+const resolvedProducts = use(productsPromise);
+```
+* **Impact**: Removes mounting layout delays and aligns client components with declarative Suspense patterns.
+
+### 5. Prop-Level References (No `forwardRef`)
+React 19 passes the `ref` attribute as a normal prop, making `forwardRef` obsolete.
+* **Impact**: Simplifies the codebase for custom form controls like custom text inputs.
+
+---
+
 ## 🔌 API Reference
 - **Endpoint**: `https://devapi.waltonplaza.com.bd/graphql`
 - **Primary query**: `getProducts(pagination, filter)`
