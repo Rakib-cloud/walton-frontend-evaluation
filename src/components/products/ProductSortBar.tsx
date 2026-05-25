@@ -13,9 +13,10 @@ import { SORT_OPTIONS } from "@/lib/constants";
 type ProductSortBarProps = {
   itemCount: number;
   categoryLabel?: string | null;
+  onStartFiltering?: () => void;
 };
 
-export function ProductSortBar({ itemCount, categoryLabel }: ProductSortBarProps) {
+export function ProductSortBar({ itemCount, categoryLabel, onStartFiltering }: ProductSortBarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -42,9 +43,10 @@ export function ProductSortBar({ itemCount, categoryLabel }: ProductSortBarProps
           "all",
         sort: nextSort,
       });
+      if (onStartFiltering) onStartFiltering();
       router.replace(`/products?${params.toString()}`, { scroll: false });
     },
-    [router, searchParams],
+    [router, searchParams, onStartFiltering],
   );
 
   const label = categoryLabel

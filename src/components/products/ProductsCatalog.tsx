@@ -44,7 +44,12 @@ export function ProductsCatalog({
 
   const [products, setProducts] = useState(initialProducts);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [isFiltering, setIsFiltering] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setIsFiltering(false);
+  }, [searchParams]);
 
   const filters = useMemo(
     () =>
@@ -176,6 +181,7 @@ export function ProductsCatalog({
             categories={categories} 
             brands={brands} 
             onClose={() => setIsMobileFilterOpen(false)}
+            onStartFiltering={() => setIsFiltering(true)}
             className="flex-1 overflow-y-auto"
           />
         </div>
@@ -201,11 +207,20 @@ export function ProductsCatalog({
             <ProductSortBar
               itemCount={visibleProducts.length}
               categoryLabel={filters.category}
+              onStartFiltering={() => setIsFiltering(true)}
             />
           </div>
         </div>
 
-        {visibleProducts.length === 0 ? (
+        {isFiltering ? (
+          <ul className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <li key={index} className="flex w-full">
+                <ProductCardSkeleton className="w-full" />
+              </li>
+            ))}
+          </ul>
+        ) : visibleProducts.length === 0 ? (
           <div className="rounded-lg border border-zinc-200 bg-white p-10 text-center">
             <p className="font-medium text-zinc-900">
               No products match your filters
@@ -229,7 +244,7 @@ export function ProductsCatalog({
         ) : null}
 
         <div ref={loadMoreRef} className="mt-8">
-          {isLoadingMore ? (
+          {isFiltering ? null : isLoadingMore ? (
             <ul className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {Array.from({ length: 3 }).map((_, index) => (
                 <li key={index} className="flex w-full">

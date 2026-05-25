@@ -16,6 +16,7 @@ type ProductFiltersBarProps = {
   brands: string[];
   className?: string;
   onClose?: () => void;
+  onStartFiltering?: () => void;
 };
 
 const CHECKBOX_CLASS =
@@ -26,6 +27,7 @@ export function ProductFiltersBar({
   brands,
   className,
   onClose,
+  onStartFiltering,
 }: ProductFiltersBarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -53,10 +55,11 @@ export function ProductFiltersBar({
         (searchParams.get("sort") as ProductFilters["sort"]) ?? "price-asc";
       const next = { ...filters, ...patch, sort };
       const params = filtersToSearchParams(next);
+      if (onStartFiltering) onStartFiltering();
       router.replace(`/products?${params.toString()}`, { scroll: false });
       if (onClose) onClose();
     },
-    [filters, router, searchParams, onClose],
+    [filters, router, searchParams, onClose, onStartFiltering],
   );
 
   const sliderMin = filters.minPrice ?? PRICE_FILTER_BOUNDS.min;
@@ -76,6 +79,7 @@ export function ProductFiltersBar({
           <button
             type="button"
             onClick={() => {
+              if (onStartFiltering) onStartFiltering();
               router.replace("/products", { scroll: false });
               if (onClose) onClose();
             }}

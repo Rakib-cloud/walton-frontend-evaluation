@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { SlidersIcon } from "@/components/products/FilterSection";
 import { formatFilterPrice } from "@/lib/format";
 
@@ -19,15 +20,38 @@ export function PriceRangeFilter({
   const { min: boundMin, max: boundMax } = bounds;
   const span = Math.max(boundMax - boundMin, 1);
 
-  const minPercent = ((valueMin - boundMin) / span) * 100;
-  const maxPercent = ((valueMax - boundMin) / span) * 100;
+  // Local state for instant visual updates
+  const [localMin, setLocalMin] = useState(valueMin);
+  const [localMax, setLocalMax] = useState(valueMax);
+
+  // Sync local state when parent props change (e.g., on URL change or Reset All)
+  useEffect(() => {
+    setLocalMin(valueMin);
+  }, [valueMin]);
+
+  useEffect(() => {
+    setLocalMax(valueMax);
+  }, [valueMax]);
+
+  // Debounced parent notification
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (localMin !== valueMin || localMax !== valueMax) {
+        onChange(localMin, localMax);
+      }
+    }, 400); // 400ms debounce
+    return () => clearTimeout(timer);
+  }, [localMin, localMax, onChange, valueMin, valueMax]);
+
+  const minPercent = ((localMin - boundMin) / span) * 100;
+  const maxPercent = ((localMax - boundMin) / span) * 100;
 
   const handleMinChange = (nextMin: number) => {
-    onChange(Math.min(nextMin, valueMax), valueMax);
+    setLocalMin(Math.min(nextMin, localMax));
   };
 
   const handleMaxChange = (nextMax: number) => {
-    onChange(valueMin, Math.max(nextMax, valueMin));
+    setLocalMax(Math.max(nextMax, localMin));
   };
 
   return (
@@ -62,33 +86,33 @@ export function PriceRangeFilter({
           min={boundMin}
           max={boundMax}
           step={1}
-          value={valueMin}
+          value={localMin}
           onChange={(event) => handleMinChange(Number(event.target.value))}
           className="price-range-input price-range-input--min"
           aria-label="Minimum price"
           aria-valuemin={boundMin}
           aria-valuemax={boundMax}
-          aria-valuenow={valueMin}
+          aria-valuenow={localMin}
         />
         <input
           type="range"
           min={boundMin}
           max={boundMax}
           step={1}
-          value={valueMax}
+          value={localMax}
           onChange={(event) => handleMaxChange(Number(event.target.value))}
           className="price-range-input price-range-input--max"
           aria-label="Maximum price"
           aria-valuemin={boundMin}
           aria-valuemax={boundMax}
-          aria-valuenow={valueMax}
+          aria-valuenow={localMax}
         />
       </div>
 
       <p className="text-center text-sm font-semibold text-[#39a9bd]">
-        {formatFilterPrice(valueMin)}
+        {formatFilterPrice(localMin)}
         <span className="mx-2 font-normal text-zinc-400">-</span>
-        {formatFilterPrice(valueMax)}
+        {formatFilterPrice(localMax)}
       </p>
     </div>
   );
