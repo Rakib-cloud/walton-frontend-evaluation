@@ -45,6 +45,7 @@ export function InputField({
       {textarea ? (
         <textarea
           id={id}
+          name={id}
           rows={rows}
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -54,6 +55,7 @@ export function InputField({
       ) : (
         <input
           id={id}
+          name={id}
           type={type}
           value={value}
           onChange={(e) => onChange(e.target.value)}

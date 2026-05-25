@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useTransition, useOptimistic } from "react";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/features/cart/store/cart-store";
 import { cn } from "@/lib/cn";
@@ -34,6 +34,10 @@ export function AddToCartButton({
   const router = useRouter();
   const addItem = useCartStore((state) => state.addItem);
   const [isPending, startTransition] = useTransition();
+  const [optimisticAdding, setOptimisticAdding] = useOptimistic(
+    false,
+    (state, nextValue: boolean) => nextValue
+  );
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -42,6 +46,7 @@ export function AddToCartButton({
     if (disabled) return;
 
     startTransition(async () => {
+      setOptimisticAdding(true);
       addItem({
         uid,
         name,
@@ -49,15 +54,21 @@ export function AddToCartButton({
         posItemCode,
         unitPrice,
       }, quantity);
+      
+      // Simulate minor visual confirmation transition delay
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      
       toast.success(`${name} added to cart!`);
       router.push("/cart");
     });
   };
 
+  const isCurrentAdding = isPending || optimisticAdding;
+
   return (
     <button
       type="button"
-      disabled={disabled || isPending}
+      disabled={disabled || isCurrentAdding}
       onClick={handleClick}
       className={cn(
         "inline-flex h-10 items-center justify-center rounded-md px-4 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer",
@@ -68,7 +79,7 @@ export function AddToCartButton({
       )}
       aria-label={disabled ? "Out of stock" : `${label} ${name}`}
     >
-      {disabled ? "Out of Stock" : isPending ? "Adding..." : label}
+      {disabled ? "Out of Stock" : isCurrentAdding ? "Adding..." : label}
     </button>
   );
 }

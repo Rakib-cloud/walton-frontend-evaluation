@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/features/cart/store/cart-store";
@@ -41,8 +42,58 @@ export default function CheckoutPage() {
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("cod"); // default cash on delivery
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formState, formAction, isPending] = useActionState(
+    async (prevState: any, formData: FormData) => {
+      const fullNameVal = formData.get("fullName") as string;
+      const phoneVal = formData.get("phone") as string;
+      const emailVal = formData.get("email") as string;
+      const addressVal = formData.get("address") as string;
+      const cityVal = formData.get("city") as string;
+
+      const newErrors: FormErrors = {};
+
+      if (!fullNameVal?.trim()) newErrors.fullName = "Full Name is required";
+      if (!phoneVal?.trim()) {
+        newErrors.phone = "Phone number is required";
+      } else if (!/^[0-9+-\s]{11,15}$/.test(phoneVal.trim())) {
+        newErrors.phone = "Please enter a valid 11-15 digit phone number";
+      }
+      if (!addressVal?.trim()) newErrors.address = "Shipping address is required";
+      if (!cityVal?.trim()) newErrors.city = "City is required";
+      
+      if (emailVal?.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal.trim())) {
+        newErrors.email = "Please enter a valid email address";
+      }
+
+      if (Object.keys(newErrors).length > 0) {
+        return { errors: newErrors };
+      }
+
+      // Simulate ordering delay
+      await new Promise((resolve) => setTimeout(resolve, 1200));
+
+      const orderId = `WP-${Math.floor(10000000 + Math.random() * 90000000)}`;
+      
+      const orderDetails = {
+        orderId,
+        fullName: fullNameVal,
+        phone: phoneVal,
+        email: emailVal || "N/A",
+        address: addressVal,
+        city: cityVal,
+        paymentMethod: paymentMethod === "cod" ? "Cash on Delivery" : "Digital Payment",
+        totalAmount: orderTotal,
+        itemsCount: items.reduce((sum, item) => sum + item.quantity, 0),
+      };
+      
+      sessionStorage.setItem("walton-latest-order", JSON.stringify(orderDetails));
+      clearCart();
+      toast.success("Order placed successfully! Redirecting...");
+      router.push("/checkout/success");
+      return { success: true };
+    },
+    null
+  );
 
   useEffect(() => {
     /* eslint-disable-next-line react-hooks/set-state-in-effect */
@@ -144,7 +195,7 @@ export default function CheckoutPage() {
   }
 
   // Redirect to products if checkout accessed with empty cart
-  if (items.length === 0 && !isSubmitting) {
+  if (items.length === 0 && !isPending) {
     return (
       <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 text-center">
         <h2 className="text-xl font-bold text-zinc-900 mb-2">No items to checkout</h2>
@@ -159,63 +210,7 @@ export default function CheckoutPage() {
   const shippingCost = 100; // Flat BDT 100 shipping fee
   const orderTotal = subtotal + shippingCost;
 
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
-
-    if (!fullName.trim()) newErrors.fullName = "Full Name is required";
-    if (!phone.trim()) {
-      newErrors.phone = "Phone number is required";
-    } else if (!/^[0-9+-\s]{11,15}$/.test(phone.trim())) {
-      newErrors.phone = "Please enter a valid 11-15 digit phone number";
-    }
-    if (!address.trim()) newErrors.address = "Shipping address is required";
-    if (!city.trim()) newErrors.city = "City is required";
-    
-    if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      newErrors.email = "Please enter a valid email address";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handlePlaceOrder = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) return;
-
-    setIsSubmitting(true);
-
-    // Simulate ordering delay
-    setTimeout(() => {
-      // Mock order ID creation
-      const orderId = `WP-${Math.floor(10000000 + Math.random() * 90000000)}`;
-      
-      // Store order details in sessionStorage so they can be shown on the success page
-      const orderDetails = {
-        orderId,
-        fullName,
-        phone,
-        email: email || "N/A",
-        address,
-        city,
-        paymentMethod: paymentMethod === "cod" ? "Cash on Delivery" : "Digital Payment",
-        totalAmount: orderTotal,
-        itemsCount: items.reduce((sum, item) => sum + item.quantity, 0),
-      };
-      
-      sessionStorage.setItem("walton-latest-order", JSON.stringify(orderDetails));
-
-      // Clear Cart
-      clearCart();
-
-      // Success Toast
-      toast.success("Order placed successfully! Redirecting...");
-
-      // Redirect
-      router.push("/checkout/success");
-    }, 1200);
-  };
+  // Action is handled by useActionState
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-8 sm:py-12 sm:px-6 lg:px-8">
@@ -223,7 +218,7 @@ export default function CheckoutPage() {
         Checkout
       </h1>
 
-      <form onSubmit={handlePlaceOrder} className="grid grid-cols-1 gap-6 lg:gap-8 lg:grid-cols-3 lg:items-start">
+      <form action={formAction} className="grid grid-cols-1 gap-6 lg:gap-8 lg:grid-cols-3 lg:items-start">
         {/* Shipping Form & Payment Method (Left 2 cols) */}
         <div className="space-y-6 lg:col-span-2">
           {/* Section 1: Shipping details */}
@@ -239,7 +234,7 @@ export default function CheckoutPage() {
                 label="Full Name"
                 value={fullName}
                 onChange={setFullName}
-                error={errors.fullName}
+                error={formState?.errors?.fullName}
                 placeholder="e.g. John Doe"
                 required
                 className="sm:col-span-2"
@@ -250,7 +245,7 @@ export default function CheckoutPage() {
                 label="Phone Number"
                 value={phone}
                 onChange={setPhone}
-                error={errors.phone}
+                error={formState?.errors?.phone}
                 placeholder="e.g. 01712345678"
                 required
               />
@@ -261,7 +256,7 @@ export default function CheckoutPage() {
                 type="email"
                 value={email}
                 onChange={setEmail}
-                error={errors.email}
+                error={formState?.errors?.email}
                 placeholder="e.g. name@example.com"
               />
 
@@ -270,7 +265,7 @@ export default function CheckoutPage() {
                 label="Street Address"
                 value={address}
                 onChange={setAddress}
-                error={errors.address}
+                error={formState?.errors?.address}
                 placeholder="House No, Road No, Area details..."
                 textarea
                 required
@@ -282,7 +277,7 @@ export default function CheckoutPage() {
                 label="City / District"
                 value={city}
                 onChange={setCity}
-                error={errors.city}
+                error={formState?.errors?.city}
                 placeholder="e.g. Dhaka"
                 required
                 className="sm:col-span-2"
@@ -397,15 +392,23 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full flex h-12 items-center justify-center rounded-xl bg-walton-blue text-sm font-bold text-white transition-all hover:bg-walton-teal shadow-xs hover:shadow-md active:scale-99 disabled:cursor-not-allowed disabled:opacity-70 cursor-pointer"
-          >
-            {isSubmitting ? "Placing Order..." : "Confirm & Place Order"}
-          </button>
+          <SubmitOrderButton />
         </div>
       </form>
     </main>
+  );
+}
+
+function SubmitOrderButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="w-full flex h-12 items-center justify-center rounded-xl bg-walton-blue text-sm font-bold text-white transition-all hover:bg-walton-teal shadow-xs hover:shadow-md active:scale-99 disabled:cursor-not-allowed disabled:opacity-70 cursor-pointer"
+    >
+      {pending ? "Placing Order..." : "Confirm & Place Order"}
+    </button>
   );
 }

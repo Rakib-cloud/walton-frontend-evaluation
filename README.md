@@ -205,47 +205,49 @@ This section maps the requested evaluation criteria directly to their specific f
 
 #### 19. Use at least one modern React 19 feature
 - **Status**: Completed
-- **File Map**: Implemented via Asynchronous Transitions (`useTransition`) inside the [AddToCartButton.tsx](file:///Users/rakibulislam/Desktop/ACI%20Projects/walton_frontend_evaluation/src/components/products/AddToCartButton.tsx#L36) component to manage pending states during route modifications.
+- **File Map**: Multi-feature implementation across the code:
+  - **Form Actions & `useActionState`**: Implemented inside [checkout/page.tsx](file:///Users/rakibulislam/Desktop/ACI%20Projects/walton_frontend_evaluation/src/app/%28shop%29/checkout/page.tsx) to bind shipping form action workflows.
+  - **Decoupled Form Pending Status via `useFormStatus`**: Submit buttons read parent action pending states dynamically.
+  - **Optimistic State via `useOptimistic`**: Implemented in [AddToCartButton.tsx](file:///Users/rakibulislam/Desktop/ACI%20Projects/walton_frontend_evaluation/src/components/products/AddToCartButton.tsx) to provide instant visual feedback on click.
+  - **Asynchronous Transitions (`useTransition`)**: Handles async execution borders.
 
 ---
 
-## 🚀 Future Roadmap: Leveraging Modern React 19 Features
+## ⚛️ React 19 Implementations & Architecture
 
-To take the project further, several advanced React 19 patterns can be implemented to streamline code structures and enhance user experience:
+The application has been updated to use modern React 19 APIs natively for state mutations, forms, and optimistic visual feedback:
 
-### 1. Form Actions and `useActionState`
-Currently, the checkout form manages error states and pending flags using separate local state variables. In React 19, we can refactor this using Form Actions and the `useActionState` hook:
+### 1. Form Actions & `useActionState` (State Transitions)
+The shipping details form inside [checkout/page.tsx](file:///Users/rakibulislam/Desktop/ACI%20Projects/walton_frontend_evaluation/src/app/%28shop%29/checkout/page.tsx) has been upgraded from manual submit listeners and loading states to React 19's native `useActionState` hook:
 ```tsx
-const [state, formAction, isPending] = useActionState(placeOrderAction, null);
+const [formState, formAction, isPending] = useActionState(
+  async (prevState, formData) => { ... },
+  null
+);
 ```
-* **Impact**: Eliminates verbose validation states, automatically handles client/server submission delays, and manages fields errors natively.
+- **Form Bindings**: Submits native `FormData` payloads through `<form action={formAction}>` bindings.
+- **Visual Feedback**: Errors are tracked natively via `formState?.errors` and displayed in the corresponding fields.
 
-### 2. Decoupled Form Status with `useFormStatus`
-The CTA checkout buttons located deep inside order summary sidebars can read parent form pending states directly without manual prop-drilling:
+### 2. Nested Form Status Tracker (`useFormStatus`)
+Rather than passing down loading flags as props, the checkout submit button is extracted into a child `<SubmitOrderButton />` component that reads parent status natively:
 ```tsx
 import { useFormStatus } from "react-dom";
 const { pending } = useFormStatus();
 ```
-* **Impact**: Simplifies component tree and avoids unnecessary wrapper hooks.
+- **Impact**: Removes prop-drilling, encapsulates visual buttons, and leverages context-aware React 19 form behaviors.
 
-### 3. Immediate Badge & Cart Updates via `useOptimistic`
-Instead of waiting for store calculations and Next.js page state synchronization during cart actions, we can render temporary local updates immediately:
+### 3. Immediate Optimistic Toggles (`useOptimistic`)
+In [AddToCartButton.tsx](file:///Users/rakibulislam/Desktop/ACI%20Projects/walton_frontend_evaluation/src/components/products/AddToCartButton.tsx), adding elements triggers React 19's `useOptimistic` state hook:
 ```tsx
-const [optimisticCart, setOptimisticCart] = useOptimistic(cartItems, updateItemQtyReducer);
+const [optimisticAdding, setOptimisticAdding] = useOptimistic(
+  false,
+  (state, nextValue: boolean) => nextValue
+);
 ```
-* **Impact**: Visually instantaneous cart quantities and badge update times.
+- **Impact**: Instantly sets the button label to "Adding..." on user click, hiding transition delay latency during Apollo Store writes and page redirections.
 
-### 4. Direct Promise Resolution in Render using `use()`
-We can pass query promises directly from parent Server Components down to client elements, rendering layouts as the data resolves:
-```tsx
-import { use } from "react";
-const resolvedProducts = use(productsPromise);
-```
-* **Impact**: Removes mounting layout delays and aligns client components with declarative Suspense patterns.
-
-### 5. Prop-Level References (No `forwardRef`)
-React 19 passes the `ref` attribute as a normal prop, making `forwardRef` obsolete.
-* **Impact**: Simplifies the codebase for custom form controls like custom text inputs.
+### 4. Native Reference Binding (Prop-level refs)
+`InputField.tsx` passes ref attributes directly as standard props (`ref={ref}`) instead of wrapping custom elements in complex `forwardRef` hooks, complying with React 19's simplified ref bindings.
 
 ---
 
