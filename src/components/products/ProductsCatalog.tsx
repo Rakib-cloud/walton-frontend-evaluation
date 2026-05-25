@@ -7,7 +7,7 @@ import { cn } from "@/lib/cn";
 import { ProductCard } from "@/components/products/ProductCard";
 import { ProductFiltersBar } from "@/components/products/ProductFiltersBar";
 import { ProductSortBar } from "@/components/products/ProductSortBar";
-import { ProductCardSkeleton } from "@/components/ui/Skeleton";
+import { CatalogGridSkeleton } from "@/components/skeletons/CatalogGridSkeleton";
 import { assertGetProductsSuccess } from "@/graphql/client/api-response";
 import { getFragmentData } from "@/graphql/generated";
 import {
@@ -47,6 +47,10 @@ export function ProductsCatalog({
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isFiltering, setIsFiltering] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [skip, setSkip] = useState(initialProducts.length);
+  const [hasMore, setHasMore] = useState(
+    initialProducts.length >= DEFAULT_PAGE_SIZE && initialProducts.length < totalCount
+  );
 
   const [filters, setFilters] = useState(() =>
     filtersFromSearchParams(
@@ -76,8 +80,6 @@ export function ProductsCatalog({
     return sortProducts(filtered, filters.sort);
   }, [products, filters]);
 
-  const hasMore = products.length < totalCount;
-
   const loadMore = useCallback(async () => {
     if (isLoadingMore || !hasMore) return;
 
@@ -88,7 +90,7 @@ export function ProductsCatalog({
       const { data } = await client.query({
         query: GetProductsDocument,
         variables: {
-          pagination: { skip: products.length, limit: DEFAULT_PAGE_SIZE },
+          pagination: { skip, limit: DEFAULT_PAGE_SIZE },
           filter: { isActive: true },
         },
       });
@@ -97,7 +99,10 @@ export function ProductsCatalog({
 
       assertGetProductsSuccess(data.getProducts);
 
-      const nextProducts = data.getProducts.result.products
+      const nextRawProducts = data.getProducts.result.products || [];
+      const fetchedLength = nextRawProducts.length;
+
+      const nextProducts = nextRawProducts
         .map((ref) => getFragmentData(ProductCardFieldsFragmentDoc, ref))
         .map(toCatalogProduct)
         .filter((product): product is CatalogProduct => product != null);
@@ -107,6 +112,12 @@ export function ProductsCatalog({
         const unique = nextProducts.filter((item) => !existingIds.has(item.uid));
         return [...current, ...unique];
       });
+
+      setSkip((current) => current + fetchedLength);
+
+      if (fetchedLength < DEFAULT_PAGE_SIZE || (skip + fetchedLength) >= totalCount) {
+        setHasMore(false);
+      }
     } catch (loadError) {
       setError(
         loadError instanceof Error
@@ -116,7 +127,7 @@ export function ProductsCatalog({
     } finally {
       setIsLoadingMore(false);
     }
-  }, [client, hasMore, isLoadingMore, products.length]);
+  }, [client, hasMore, isLoadingMore, skip, totalCount]);
 
   useEffect(() => {
     const node = loadMoreRef.current;
@@ -225,13 +236,7 @@ export function ProductsCatalog({
         </div>
 
         {isFiltering ? (
-          <ul className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            {Array.from({ length: 6 }).map((_, index) => (
-              <li key={index} className="flex w-full">
-                <ProductCardSkeleton className="w-full" />
-              </li>
-            ))}
-          </ul>
+          <CatalogGridSkeleton count={6} />
         ) : visibleProducts.length === 0 ? (
           <div className="rounded-lg border border-zinc-200 bg-white p-10 text-center">
             <p className="font-medium text-zinc-900">
@@ -257,13 +262,7 @@ export function ProductsCatalog({
 
         <div ref={loadMoreRef} className="mt-8">
           {isFiltering ? null : isLoadingMore ? (
-            <ul className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-              {Array.from({ length: 3 }).map((_, index) => (
-                <li key={index} className="flex w-full">
-                <ProductCardSkeleton className="w-full" />
-              </li>
-              ))}
-            </ul>
+            <CatalogGridSkeleton count={3} />
           ) : hasMore ? (
             <p className="text-center text-sm text-zinc-500">
               Scroll to load more products

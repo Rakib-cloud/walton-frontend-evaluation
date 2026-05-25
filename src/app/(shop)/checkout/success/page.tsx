@@ -5,6 +5,8 @@ import Link from "next/link";
 import { formatCurrency } from "@/lib/format";
 import { CheckIcon, TruckIcon } from "@/components/ui/Icons";
 
+import { CheckoutSuccessSkeleton } from "@/components/skeletons/CheckoutSuccessSkeleton";
+
 type OrderDetails = {
   orderId: string;
   fullName: string;
@@ -35,11 +37,7 @@ export default function CheckoutSuccessPage() {
   }, []);
 
   if (!hasMounted) {
-    return (
-      <main className="mx-auto max-w-2xl px-4 py-16 sm:px-6 lg:px-8 text-center">
-        <div className="h-96 w-full animate-pulse rounded-lg bg-zinc-200" />
-      </main>
-    );
+    return <CheckoutSuccessSkeleton />;
   }
 
   // Fallback values if direct navigation occurred

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PageContainer } from "@/components/ui/PageContainer";
 
 export const metadata: Metadata = {
   title: "Products",
@@ -11,8 +12,8 @@ export default function ProductsLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <PageContainer>
       {children}
-    </div>
+    </PageContainer>
   );
 }
