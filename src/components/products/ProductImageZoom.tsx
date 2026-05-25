@@ -79,7 +79,7 @@ export function ProductImageZoom({
     <div
       ref={containerRef}
       className={cn(
-        "relative overflow-visible cursor-zoom-in select-none flex-1 flex flex-col h-full",
+        "relative overflow-visible cursor-zoom-in select-none lg:flex-1 flex flex-col lg:h-full",
         className
       )}
       onMouseEnter={handleMouseEnter}
@@ -88,9 +88,9 @@ export function ProductImageZoom({
       onClick={onClick}
     >
       {/* Inner Image Container (Overflow Hidden) */}
-      <div className="relative overflow-hidden rounded-lg border border-zinc-200 bg-white transition-shadow hover:shadow-md w-full h-full flex-1 flex flex-col justify-center">
+      <div className="relative overflow-hidden rounded-lg border border-zinc-200 bg-white transition-shadow hover:shadow-md w-full lg:h-full lg:flex-1 flex flex-col justify-center">
         {/* Main Image Container */}
-        <div className="relative aspect-square w-full h-full flex-1 min-h-[240px] sm:min-h-[400px]">
+        <div className="relative aspect-square w-full lg:h-full lg:flex-1 sm:min-h-[400px]">
           <Image
             src={imageSrc}
             alt={alt}

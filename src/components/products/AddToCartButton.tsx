@@ -59,7 +59,9 @@ export function AddToCartButton({
       await new Promise((resolve) => setTimeout(resolve, 300));
       
       toast.success(`${name} added to cart!`);
-      router.push("/cart");
+      if (variant === "buyNow") {
+        router.push("/cart");
+      }
     });
   };
 

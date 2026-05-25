@@ -74,9 +74,9 @@ export function ProductGallery({
   }, [isLightboxOpen, activeIndex, goTo]);
 
   return (
-    <div className={cn("flex flex-col h-full space-y-4", className)}>
+    <div className={cn("flex flex-col lg:h-full space-y-4", className)}>
       {/* Main Image Container with Magnifier */}
-      <div className="relative group overflow-visible flex-1 flex flex-col">
+      <div className="relative group overflow-visible lg:flex-1 flex flex-col w-[70%] sm:w-full mx-auto">
         {/* Floating Zoom & Lightbox badge */}
         <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs text-zinc-700 text-[10px] sm:text-xs px-2.5 py-1 rounded-full font-semibold z-10 border border-zinc-200/60 flex items-center gap-1.5 shadow-xs pointer-events-none transition-colors group-hover:bg-white group-hover:text-walton-blue">
           <SearchPlusIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-walton-teal" />
@@ -90,7 +90,7 @@ export function ProductGallery({
           alt={productName}
           zoomFactor={2.5}
           onClick={() => setIsLightboxOpen(true)}
-          className="w-full h-full flex-1 flex flex-col"
+          className="w-full lg:h-full lg:flex-1 flex flex-col"
         />
 
         {/* Carousel Prev/Next Overlay buttons for quick swapping (Mobile/Tablet and fallback) */}

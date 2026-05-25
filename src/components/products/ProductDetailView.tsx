@@ -94,13 +94,13 @@ export function ProductDetailView({ product, relatedProducts }: ProductDetailVie
   }, [relatedProducts]);
 
   return (
-    <article className="space-y-8">
+    <article className="space-y-8 w-full min-w-0 overflow-hidden">
       <ProductDetailBreadcrumb productName={productName} />
 
       <div className="grid gap-6 lg:gap-8 lg:grid-cols-4 lg:items-start">
         {/* Main Content Area */}
         <div className="lg:col-span-3 space-y-8 lg:space-y-10">
-          <div className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:gap-12 bg-white rounded-2xl border border-zinc-200 p-4 sm:p-6 shadow-xs">
+          <div className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:gap-12 bg-white rounded-2xl border border-zinc-200 p-4 sm:p-6 shadow-xs w-full min-w-0 overflow-hidden">
             <ProductGallery
               images={images}
               productName={productName}

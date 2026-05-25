@@ -208,8 +208,8 @@ export function ProductDetailSummary({
       </div>
 
       {/* Custom Buy Now & Add to Cart Action buttons */}
-      <div className="flex flex-col gap-3 border-t border-zinc-100 pt-5">
-        <div className="flex w-full overflow-hidden rounded-xl bg-[#ec1c24] text-white shadow-xs hover:shadow-md transition-all hover:bg-[#d61920]">
+      <div className="flex flex-col sm:flex-row gap-3 border-t border-zinc-100 pt-5">
+        <div className="flex w-full sm:flex-1 overflow-hidden rounded-xl bg-[#ec1c24] text-white shadow-xs hover:shadow-md transition-all hover:bg-[#d61920]">
           {/* Icon block */}
           <div className="flex items-center justify-center bg-amber-500 px-4 py-3 text-white border-r border-black/10 shrink-0">
             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -240,7 +240,7 @@ export function ProductDetailSummary({
           disabled={!inStock}
           quantity={quantity}
           label="Add to Cart"
-          className="w-full h-10 rounded-xl border border-zinc-200 bg-white text-xs font-bold text-zinc-700 hover:border-[#142D84] hover:bg-zinc-50 transition-colors cursor-pointer"
+          className="w-full sm:flex-1 h-[48px] rounded-xl border border-zinc-200 bg-white text-xs sm:text-sm font-extrabold text-zinc-700 hover:border-[#142D84] hover:bg-zinc-50 transition-colors cursor-pointer"
         />
       </div>
     </div>

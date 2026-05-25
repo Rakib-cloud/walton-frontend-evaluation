@@ -6,9 +6,9 @@ type ProductDetailBreadcrumbProps = {
 
 export function ProductDetailBreadcrumb({ productName }: ProductDetailBreadcrumbProps) {
   return (
-    <nav aria-label="Breadcrumb" className="text-sm text-zinc-500">
-      <ol className="flex flex-wrap items-center gap-2">
-        <li>
+    <nav aria-label="Breadcrumb" className="text-sm text-zinc-500 w-full min-w-0 overflow-hidden">
+      <ol className="flex items-center gap-2 w-full min-w-0 overflow-hidden">
+        <li className="shrink-0">
           <Link
             href="/products"
             className="font-medium text-[#142D84] hover:underline"
@@ -16,8 +16,8 @@ export function ProductDetailBreadcrumb({ productName }: ProductDetailBreadcrumb
             Products
           </Link>
         </li>
-        <li aria-hidden="true">/</li>
-        <li className="line-clamp-1 font-medium text-zinc-700">{productName}</li>
+        <li className="shrink-0" aria-hidden="true">/</li>
+        <li className="truncate font-medium text-zinc-700 min-w-0 flex-1">{productName}</li>
       </ol>
     </nav>
   );
