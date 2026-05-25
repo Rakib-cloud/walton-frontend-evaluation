@@ -1,52 +1,29 @@
-"use client";
-
-import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { ListIcon, SortIcon } from "@/components/products/FilterSection";
 import type { ProductFilters } from "@/features/products/types/filters";
-import {
-  DEFAULT_FILTERS,
-  filtersToSearchParams,
-} from "@/features/products/types/filters";
 import { SORT_OPTIONS } from "@/lib/constants";
 
 type ProductSortBarProps = {
   itemCount: number;
+  sort: ProductFilters["sort"];
+  onSortChange: (nextSort: ProductFilters["sort"]) => void;
   categoryLabel?: string | null;
   onStartFiltering?: () => void;
 };
 
-export function ProductSortBar({ itemCount, categoryLabel, onStartFiltering }: ProductSortBarProps) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const sort = useMemo(
-    () =>
-      (searchParams.get("sort") as ProductFilters["sort"]) ??
-      DEFAULT_FILTERS.sort,
-    [searchParams],
-  );
-
+export function ProductSortBar({
+  itemCount,
+  sort,
+  onSortChange,
+  categoryLabel,
+  onStartFiltering,
+}: ProductSortBarProps) {
   const updateSort = useCallback(
     (nextSort: ProductFilters["sort"]) => {
-      const params = filtersToSearchParams({
-        minPrice: searchParams.get("minPrice")
-          ? Number(searchParams.get("minPrice"))
-          : null,
-        maxPrice: searchParams.get("maxPrice")
-          ? Number(searchParams.get("maxPrice"))
-          : null,
-        category: searchParams.get("category"),
-        brand: searchParams.get("brand"),
-        availability:
-          (searchParams.get("availability") as ProductFilters["availability"]) ??
-          "all",
-        sort: nextSort,
-      });
       if (onStartFiltering) onStartFiltering();
-      router.replace(`/products?${params.toString()}`, { scroll: false });
+      onSortChange(nextSort);
     },
-    [router, searchParams, onStartFiltering],
+    [onSortChange, onStartFiltering],
   );
 
   const label = categoryLabel
@@ -71,7 +48,7 @@ export function ProductSortBar({ itemCount, categoryLabel, onStartFiltering }: P
           onChange={(event) =>
             updateSort(event.target.value as ProductFilters["sort"])
           }
-          className="h-9 min-w-[180px] rounded border border-zinc-300 bg-white px-3 text-sm text-zinc-800 focus:border-walton-blue focus:outline-none focus:ring-1 focus:ring-walton-blue"
+          className="h-9 min-w-[180px] rounded border border-zinc-300 bg-white px-3 text-sm text-zinc-800 focus:border-walton-blue focus:outline-none focus:ring-1 focus:ring-walton-blue cursor-pointer"
         >
           {SORT_OPTIONS.map((option) => (
             <option key={option.value} value={option.value}>

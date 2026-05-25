@@ -1,11 +1,10 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { FilterSection, FunnelIcon } from "@/components/products/FilterSection";
 import { PriceRangeFilter } from "@/components/products/PriceRangeFilter";
 import type { ProductFilters } from "@/features/products/types/filters";
-import { filtersToSearchParams } from "@/features/products/types/filters";
+import { DEFAULT_FILTERS } from "@/features/products/types/filters";
 import { cn } from "@/lib/cn";
 import { PRICE_FILTER_BOUNDS } from "@/lib/constants";
 
@@ -14,52 +13,33 @@ import { CloseIcon } from "@/components/ui/Icons";
 type ProductFiltersBarProps = {
   categories: string[];
   brands: string[];
+  filters: ProductFilters;
+  onChange: (nextFilters: ProductFilters) => void;
   className?: string;
   onClose?: () => void;
   onStartFiltering?: () => void;
 };
 
 const CHECKBOX_CLASS =
-  "h-4 w-4 rounded border-zinc-300 text-[#142D84] accent-[#142D84] focus:ring-[#142D84]";
+  "h-4 w-4 rounded border-zinc-300 text-[#142D84] accent-[#142D84] focus:ring-[#142D84] cursor-pointer";
 
 export function ProductFiltersBar({
   categories,
   brands,
+  filters,
+  onChange,
   className,
   onClose,
   onStartFiltering,
 }: ProductFiltersBarProps) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const filters = useMemo(
-    (): Omit<ProductFilters, "sort"> => ({
-      minPrice: searchParams.get("minPrice")
-        ? Number(searchParams.get("minPrice"))
-        : null,
-      maxPrice: searchParams.get("maxPrice")
-        ? Number(searchParams.get("maxPrice"))
-        : null,
-      category: searchParams.get("category"),
-      brand: searchParams.get("brand"),
-      availability:
-        (searchParams.get("availability") as ProductFilters["availability"]) ??
-        "all",
-    }),
-    [searchParams],
-  );
-
   const updateFilters = useCallback(
     (patch: Partial<Omit<ProductFilters, "sort">>) => {
-      const sort =
-        (searchParams.get("sort") as ProductFilters["sort"]) ?? "price-asc";
-      const next = { ...filters, ...patch, sort };
-      const params = filtersToSearchParams(next);
+      const next = { ...filters, ...patch };
       if (onStartFiltering) onStartFiltering();
-      router.replace(`/products?${params.toString()}`, { scroll: false });
+      onChange(next);
       if (onClose) onClose();
     },
-    [filters, router, searchParams, onClose, onStartFiltering],
+    [filters, onChange, onClose, onStartFiltering],
   );
 
   const sliderMin = filters.minPrice ?? PRICE_FILTER_BOUNDS.min;
@@ -69,7 +49,7 @@ export function ProductFiltersBar({
   return (
     <aside
       className={cn(
-        "space-y-3 lg:sticky lg:top-0 lg:max-h-[calc(100vh-8rem)] lg:self-start lg:overflow-y-auto lg:overscroll-y-contain lg:pr-1 scrollbar-none",
+        "space-y-3 lg:pr-1",
         className,
       )}
     >
@@ -80,7 +60,7 @@ export function ProductFiltersBar({
             type="button"
             onClick={() => {
               if (onStartFiltering) onStartFiltering();
-              router.replace("/products", { scroll: false });
+              onChange(DEFAULT_FILTERS);
               if (onClose) onClose();
             }}
             className="text-xs font-medium text-[#142D84] hover:underline cursor-pointer"

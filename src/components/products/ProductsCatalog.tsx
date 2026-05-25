@@ -14,7 +14,10 @@ import {
   GetProductsDocument,
   ProductCardFieldsFragmentDoc,
 } from "@/graphql/generated/graphql";
-import { filtersFromSearchParams } from "@/features/products/types/filters";
+import {
+  filtersFromSearchParams,
+  filtersToSearchParams,
+} from "@/features/products/types/filters";
 import {
   applyProductFilters,
   sortProducts,
@@ -39,25 +42,32 @@ export function ProductsCatalog({
   const client = useApolloClient();
   const searchParams = useSearchParams();
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
-  const productsScrollRef = useRef<HTMLElement | null>(null);
-  const [scrollRoot, setScrollRoot] = useState<Element | null>(null);
 
   const [products, setProducts] = useState(initialProducts);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isFiltering, setIsFiltering] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [filters, setFilters] = useState(() =>
+    filtersFromSearchParams(
+      Object.fromEntries(searchParams.entries()),
+    )
+  );
+
   useEffect(() => {
+    setFilters(
+      filtersFromSearchParams(
+        Object.fromEntries(searchParams.entries()),
+      )
+    );
     setIsFiltering(false);
   }, [searchParams]);
 
-  const filters = useMemo(
-    () =>
-      filtersFromSearchParams(
-        Object.fromEntries(searchParams.entries()),
-      ),
-    [searchParams],
-  );
+  const handleFilterChange = useCallback((nextFilters: typeof filters) => {
+    setFilters(nextFilters);
+    const params = filtersToSearchParams(nextFilters);
+    window.history.replaceState(null, "", `/products?${params.toString()}`);
+  }, []);
 
   const categories = useMemo(() => extractCategories(products), [products]);
   const brands = useMemo(() => extractBrands(products), [products]);
@@ -109,18 +119,6 @@ export function ProductsCatalog({
   }, [client, hasMore, isLoadingMore, products.length]);
 
   useEffect(() => {
-    const mq = window.matchMedia("(min-width: 1024px)");
-
-    const syncScrollRoot = () => {
-      setScrollRoot(mq.matches ? productsScrollRef.current : null);
-    };
-
-    syncScrollRoot();
-    mq.addEventListener("change", syncScrollRoot);
-    return () => mq.removeEventListener("change", syncScrollRoot);
-  }, []);
-
-  useEffect(() => {
     const node = loadMoreRef.current;
     if (!node || !hasMore) return;
 
@@ -130,12 +128,12 @@ export function ProductsCatalog({
           void loadMore();
         }
       },
-      { root: scrollRoot, rootMargin: "240px", threshold: 0 },
+      { root: null, rootMargin: "240px", threshold: 0 },
     );
 
     observer.observe(node);
     return () => observer.disconnect();
-  }, [hasMore, loadMore, scrollRoot]);
+  }, [hasMore, loadMore]);
 
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
@@ -152,18 +150,18 @@ export function ProductsCatalog({
   }, [isMobileFilterOpen]);
 
   return (
-    <div className="grid gap-6 lg:h-[calc(100dvh-8rem)] lg:min-h-[28rem] lg:grid-cols-[280px_1fr] lg:items-start relative">
+    <div className="grid gap-6 lg:grid-cols-[280px_1fr] lg:items-start relative">
       {/* Mobile Drawer Wrapper for Filters */}
       <div
         className={cn(
-          "fixed inset-0 z-50 flex lg:static lg:block lg:z-auto lg:inset-auto lg:flex-none transition-opacity duration-300",
-          isMobileFilterOpen ? "opacity-100 visible" : "opacity-0 invisible lg:opacity-100 lg:visible"
+          "fixed inset-0 z-50 flex lg:hidden transition-opacity duration-300",
+          isMobileFilterOpen ? "opacity-100 visible" : "opacity-0 invisible"
         )}
       >
         {/* Backdrop */}
         <div 
           className={cn(
-            "fixed inset-0 bg-black/50 transition-opacity duration-300 lg:hidden",
+            "fixed inset-0 bg-black/50 transition-opacity duration-300",
             isMobileFilterOpen ? "opacity-100" : "opacity-0"
           )}
           onClick={() => setIsMobileFilterOpen(false)} 
@@ -173,13 +171,15 @@ export function ProductsCatalog({
         {/* Drawer Content */}
         <div
           className={cn(
-            "relative w-4/5 max-w-sm bg-white h-full p-4 sm:p-6 shadow-2xl transition-transform duration-300 flex flex-col lg:transform-none lg:p-0 lg:shadow-none lg:w-full lg:h-auto lg:bg-transparent",
-            isMobileFilterOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+            "relative w-4/5 max-w-sm bg-white h-full p-4 sm:p-6 shadow-2xl transition-transform duration-300 flex flex-col",
+            isMobileFilterOpen ? "translate-x-0" : "-translate-x-full"
           )}
         >
           <ProductFiltersBar 
             categories={categories} 
             brands={brands} 
+            filters={filters}
+            onChange={handleFilterChange}
             onClose={() => setIsMobileFilterOpen(false)}
             onStartFiltering={() => setIsFiltering(true)}
             className="flex-1 overflow-y-auto"
@@ -187,15 +187,25 @@ export function ProductsCatalog({
         </div>
       </div>
 
+      {/* Desktop Sticky Sidebar for Filters */}
+      <aside className="hidden lg:block lg:sticky lg:top-6 lg:self-start lg:max-h-[calc(100vh-3rem)] lg:overflow-y-auto lg:pr-1 scrollbar-none">
+        <ProductFiltersBar 
+          categories={categories} 
+          brands={brands} 
+          filters={filters}
+          onChange={handleFilterChange}
+          onStartFiltering={() => setIsFiltering(true)}
+        />
+      </aside>
+
       <section
-        ref={productsScrollRef}
-        className="lg:min-h-0 lg:h-full lg:overflow-y-auto lg:overscroll-y-contain lg:pr-1 scrollbar-none"
+        className="w-full"
         aria-label="Product results"
       >
         <div className="flex flex-col sm:flex-row gap-4 mb-5">
           <button
             type="button"
-            className="lg:hidden flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-bold text-zinc-700 shadow-sm hover:bg-zinc-50 active:scale-[0.98] transition-all"
+            className="lg:hidden flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-bold text-zinc-700 shadow-sm hover:bg-zinc-50 active:scale-[0.98] transition-all cursor-pointer"
             onClick={() => setIsMobileFilterOpen(true)}
           >
             <svg className="h-5 w-5 text-walton-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -206,6 +216,8 @@ export function ProductsCatalog({
           <div className="flex-1">
             <ProductSortBar
               itemCount={visibleProducts.length}
+              sort={filters.sort}
+              onSortChange={(sort) => handleFilterChange({ ...filters, sort })}
               categoryLabel={filters.category}
               onStartFiltering={() => setIsFiltering(true)}
             />

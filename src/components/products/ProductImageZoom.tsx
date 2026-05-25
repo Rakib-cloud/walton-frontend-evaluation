@@ -90,7 +90,7 @@ export function ProductImageZoom({
       {/* Inner Image Container (Overflow Hidden) */}
       <div className="relative overflow-hidden rounded-lg border border-zinc-200 bg-white transition-shadow hover:shadow-md w-full h-full flex-1 flex flex-col justify-center">
         {/* Main Image Container */}
-        <div className="relative aspect-square w-full h-full flex-1 min-h-[300px] sm:min-h-[400px]">
+        <div className="relative aspect-square w-full h-full flex-1 min-h-[240px] sm:min-h-[400px]">
           <Image
             src={imageSrc}
             alt={alt}
