@@ -50,12 +50,12 @@ You can spin up the application using Docker Compose. The container handles runn
 docker compose up --build --remove-orphans
 ```
 
-To run on a different host port if `3000` is already in use (e.g. port `3001`):
+To run on a different host port if `5000` is already in use (e.g. port `5001`):
 ```bash
-HOST_PORT=3001 docker compose up --build --remove-orphans
+HOST_PORT=5001 docker compose up --build --remove-orphans
 ```
 
-Open [http://localhost:3000](http://localhost:3000) (or the custom port you specified) — automatically redirects to `/products`.
+Open [http://localhost:5000](http://localhost:5000) (or the custom port you specified) — automatically redirects to `/products`.
 
 ---
 
