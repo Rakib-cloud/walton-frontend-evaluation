@@ -5,12 +5,15 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178c6?style=for-the-badge&logo=typescript)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS_4-38bdf8?style=for-the-badge&logo=tailwind-css)
 ![GraphQL](https://img.shields.io/badge/GraphQL-Apollo-e10098?style=for-the-badge&logo=graphql)
+![Docker](https://img.shields.io/badge/Docker-Enabled-2496ed?style=for-the-badge&logo=docker)
 
 High-performance product listing and detail system built for Walton Plaza. Features Server-Side Rendering (SSR), optimistic UI updates, dynamic EMI calculations, robust cart state management, and fully responsive layouts optimized for mobile performance.
 
 ---
 
 ## 🚀 Quick Start
+
+### Running Locally
 
 ```bash
 # 1. Install dependencies
@@ -24,6 +27,21 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) — automatically redirects to `/products`.
+
+### Running with Docker
+
+You can spin up the application with a single command using Docker Compose. The container handles running `npm install`, generating GraphQL types via `npm run codegen`, and starting the development server with hot-reloading:
+
+```bash
+docker compose up --build --remove-orphans
+```
+
+To run on a different host port if `3000` is already in use (e.g. port `3001`):
+```bash
+HOST_PORT=5000 docker compose up --build --remove-orphans
+```
+
+Open [http://localhost:3000](http://localhost:3000) (or the custom port you specified) — automatically redirects to `/products`.
 
 ---
 
