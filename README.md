@@ -41,7 +41,7 @@ To run on a different host port if `3000` is already in use (e.g. port `3001`):
 HOST_PORT=5000 docker compose up --build --remove-orphans
 ```
 
-Open [http://localhost:3000](http://localhost:3000) (or the custom port you specified) — automatically redirects to `/products`.
+Open [http://localhost:5000](http://localhost:5000) (or the custom port you specified) — automatically redirects to `/products`.
 
 ---
 
