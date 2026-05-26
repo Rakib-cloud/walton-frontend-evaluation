@@ -13,35 +13,49 @@ High-performance product listing and detail system built for Walton Plaza. Featu
 
 ## 🚀 Quick Start
 
-### Running Locally
+### 1. Set Up the Project
+
+After cloning or downloading the project repository, navigate to the directory and run these setup steps:
 
 ```bash
 # 1. Install dependencies
 npm install
 
-# 2. Generate GraphQL types
+# 2. Create the .env file and copy values from .env.example
+cp .env.example .env
+```
+
+### 2. Run the Application
+
+You can run the application either locally or using Docker.
+
+#### Option A: Running Locally
+
+```bash
+# 1. Generate GraphQL types
 npm run codegen
 
-# 3. Start development server
+# 2. Start development server
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) — automatically redirects to `/products`.
 
-### Running with Docker
+#### Option B: Running with Docker
 
-You can spin up the application with a single command using Docker Compose. The container handles running `npm install`, generating GraphQL types via `npm run codegen`, and starting the development server with hot-reloading:
+You can spin up the application using Docker Compose. The container handles running `npm install`, generating GraphQL types via `npm run codegen`, and starting the development server with hot-reloading automatically:
 
 ```bash
+# Run Docker Compose
 docker compose up --build --remove-orphans
 ```
 
 To run on a different host port if `3000` is already in use (e.g. port `3001`):
 ```bash
-HOST_PORT=5000 docker compose up --build --remove-orphans
+HOST_PORT=3001 docker compose up --build --remove-orphans
 ```
 
-Open [http://localhost:5000](http://localhost:5000) (or the custom port you specified) — automatically redirects to `/products`.
+Open [http://localhost:3000](http://localhost:3000) (or the custom port you specified) — automatically redirects to `/products`.
 
 ---
 
